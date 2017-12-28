@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>demo js pay</title>
+</head>
+<body>
+<button id="test">test</button>
+
+<script id='spay-script' src='{{ url }}/1/pay/jsbutton/returnscripts?appId={{ app_id }}'></script>
+<!--https://jspay.beecloud.cn http://123.56.82.71:8080  apitest98.beecloud.cn api.elionpay.com.cn/api-backend  http://121.40.75.44:8080 http://115.28.40.236:8080    123.56.82.71:8080  http://192.168.1.117:8080-->
+
+
+<script>
+    document.getElementById("test").onclick = function() {
+        <!--var now= new Date()-->
+        <!--var number = now.getTime()-->
+        <!--alert(number)-->
+        <!--var out_trade_no = "cmfjs"+number-->
+        <!--var app_id="e66e760b-0f78-44bb-a9ae-b22729d51678"-->
+        <!--var app_secret="6fb7db77-96ed-46ef-ae10-1118ee564dd3"-->
+{#        <!--var title = "{{title}}"-->#}
+        <!--var out_trade_no = "cmfjs" + str(int(time.time()))+'1'-->
+{#        <!--var amount = "{{amount}}"-->#}
+        <!--var str = str(app_id)+str(title)+str(amount)+str(out_trade_no)+str(app_secret)-->
+        <!--var sign = hex_md5(str);-->
+{#        <!--out_trade_no = "{{out_trade_no}}"-->#}
+        <!--alert("bill_no"+out_trade_no)-->
+//这里是需要的
+        BC.err = function(data) {
+            //注册错误信息接受
+            alert(data.ERROR);
+        }
+        /**
+         * 3. 调用BC.click 接口传递参数
+         */
+        BC.click({
+            <!--"title": "上铺订房订单",-->
+            "title":"{{title}}",
+            "amount": "{{amount}}",
+            "out_trade_no": "{{out_trade_no}}", //唯一订单号
+            "sign" : "{{sign}}",
+            "return_url":"http://beecloud.cn",
+            //"debug":true,
+            //"openid":"{{open_id}}",
+            //"instant_channel":"bcali",//bcaliqr
+                        /**
+             * optional 为自定义参数对象，目前只支持基本类型的key ＝》 value, 不支持嵌套对象；
+             * 回调时如果有optional则会传递给webhook地址，webhook的使用请查阅文档
+             */
+            //--"optional": {{ optional|tojson|safe }},
+            "card_no":"{{card_no}}",
+            //"use_app":false,
+            "optional":{'aa':'bb',"ip":"122.193.77.40"},
+{#            "openid":"o3kKrjpGXh0hM-ysNdZEgHZpGFqM",#}
+            //"need_ali_guide":false,
+            "notify_url":"http://mock.beecloud.cn:8001/webhook",
+            "buyer_id":"user_s_2_20170801150",
+            "analysis":{"ip":"122.193.77.40"},
+            //"coupon_id":"c4de5d9b-33b2-4e17-bedb-fc3afe0d4e94"
+        });
+    };
+
+
+
+</script>
+
+
+
+</body>
+</html>

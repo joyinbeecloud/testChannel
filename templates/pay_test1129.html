@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>渠道参数配置测试</title>
+
+    <style>
+        .s1 div{color: #FF6C2C;}
+        .s2 div{color: #FFBB2C;}
+    </style>
+</head>
+<body style="font-size: 15px">
+<div class="s1 s2">
+    <div hidden="hidden">text1</div>
+    <div hidden="hidden">text2</div>
+</div>
+
+<button id="c" hidden="hidden">btn</button>
+
+
+
+<div id="sel" style="width:85%;margin: 0 auto;"></div>
+
+<form id="form" method="get" action="/pay_bill" target="_blank" style="width:85%;margin: 0 auto;">
+    <input type="text" id="app_id" name='app_id' value="{{ app_id }}" style="display: none"/>
+    <input type="text" id="channel" name="channel" value="{{ channel }}" style="display: none"/>
+    <input type="text" id="app_secret" name="app_secret" value="{{ app_secret }}" style="display: none"/>
+    <input type="text" id="bc_express_channel_type" name="bc_express_channel_type" value="{{ bc_express_channel_type }}" style="display: none"/>
+    <br><br>
+    输入金额：<input id="total_fee" type="text" name="total_fee" value="1" style="width:100px; margin-top: 10px"/>元
+    <br><br>
+    <div id="card_no_info" name="card_no_info" style="display: none;">
+        <br>
+        请输入刷卡卡号:
+        <input id = "card_no" type="text" name="card_no" style="width:250px; margin-top: 10px">
+    </div>
+    <div id="expressInfo" style="display: none;">
+        <br><br> 结算信息(当日结算需要填写):
+        <br> 出款银行名称：<input id = "bank_name" type="text" name="bank_name" style="width:250px; margin-top: 10px">
+        <br>出款银行卡号：<input id = "bank_num" type="text" name="bank_num" style="width:250px; margin-top: 10px">
+        <br>出款人身份证号：<input id = "idcard" type="text" name="idcard" style="width:250px; margin-top: 10px">
+        <br>出款人姓名：<input id = "name" type="text" name="name" style="width:250px; margin-top: 10px">
+    </div>
+    <br>
+    <div style="margin-top: 30px; margin-left: 200px;">
+        <input id="lala" type="submit" style="width: 100px; height: 40px; text-align: center; font-size: 18px;" value="刷卡">
+    </div>
+
+</form>
+    <script language="JavaScript" src="static/jquery-2.1.4.min.js"></script>
+    <script language="JavaScript" src="static/jquery.md5.js"></script>
+    <script language="JavaScript">
+        //alert($('#channel').val())
+        $(function(){
+            if($('#channel').val()=='BC_EXPRESS'){
+                if($('#bc_express_channel_type').val()==10){
+                    $('#card_no_info').css({'display':'block'});
+                    $('#expressInfo').css({'display':'block'});
+                }else {
+                    $('#card_no_info').css({'display':'block'});
+                }
+            }else {
+                $('#card_no_info').css({'display':'none'});
+                $('#expressInfo').css({'display':'none'});
+            }
+
+            //切换样式
+            $('#c').click(function () {
+                //alert($('.s1').attr('class').indexOf('s3'));
+                if($('.s1').attr('class').indexOf('s2') >= 0){
+                    $('.s1').removeClass('s2');
+                }else {
+                    $('.s1').addClass('s2');
+                }
+            })
+            $('#test').click(function () {
+                alert($('#agent').attr('checked'));
+            });
+
+
+
+        });
+
+
+
+
+
+     document.getElementById("lala").addEventListener('click',function(e){
+             $("#form").submit();
+
+     })
+</script>
+
+</body>
+</html>

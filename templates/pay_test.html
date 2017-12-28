@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>渠道参数配置测试</title>
+
+    <style>
+        .s1 div{color: #FF6C2C;}
+        .s2 div{color: #FFBB2C;}
+        .input_style input{width:300px; margin-top: 9px;margin-left:4px;height: 28px;padding-left: 3px;font-size: 16px;}
+        .input_style button{margin-top: 20px; margin-left: 300px; width: 80px;height: 36px; font-size: 16px;border: none}
+        input::-webkit-input-placeholder{color: #D8D8D8}
+    </style>
+</head>
+<body style="font-size: 15px">
+<div class="s1 s2">
+    <div hidden="hidden">text1</div>
+    <div hidden="hidden">text2</div>
+</div>
+
+<div id="jinjian" name="jinjian" style="display: none;width:85%;margin: 0 auto;font-size: 16px;" class="input_style">
+    <br><span style="font-weight: 600">第一步</span>sf信用卡进件（已进件的跳过此步）
+    <br>持卡人姓名：<input id = "jinjian_id_holder" type="text" name="jinjian_id_holder">
+    <br>持卡人身份证：<input id = "jinjian_id_no" type="text" name="jinjian_id_no">
+    <br>信用卡卡号：<input id = "jinjian_card_no" type="text" name="jinjian_card_no" >
+    <br>持卡人手机号：<input id = "jinjian_contact" type="text" name="jinjian_contact">
+    <br><button id="jinjianButton">进件</button>
+</div>
+
+
+<div id="pay_paras" style="width:85%;margin: 0 auto;" class="input_style">
+    <div id="processDescribe" style="font-weight: 600;display: none;">第二步刷卡</div>
+    <input type="text" id="channel" name="channel" value="{{ channel }}" style="display: none"/>
+    <input type="text" id="bc_express_channel_type" name="bc_express_channel_type" value="{{ bc_express_channel_type }}" style="display: none"/>
+    <br><br>
+    输入金额：<input id="total_fee" type="text" name="total_fee" />元
+    <br>
+    <div id = "auth_code_div" name="auth_code_div" style="display: none">
+        <br>
+        微信刷卡/支付宝刷卡请输入auth_code:
+        <input id = "auth_code" type="text" name="auth_code"/>
+    </div>
+    <div id="gatewayBank_div" name="getwayBank_div" style="display: none">
+        <br>
+        网关支付请选择银行bank:
+        <select id="gatewayBank" name="gatewayBank" >
+            <option value ="农业银行">农业银行</option>
+            <option value ="建设银行">建设银行</option>
+            <option value="兴业银行">兴业银行</option>
+            <option value="招商银行">招商银行</option>
+            <option value="民生银行">民生银行</option>
+            <option value="华夏银行">华夏银行</option>
+            <option value="工商银行">工商银行</option>
+            <option value="上海银行">上海银行</option>
+            <option value="中国银行">中国银行</option>
+            <option value="交通银行">交通银行</option>
+            <option value="上海浦东发展银行">上海浦东发展银行</option>
+            <option value="广东发展银行">广东发展银行</option>
+            <option value="深圳发展银行">深圳发展银行</option>
+            <option value="中国邮政储蓄">中国邮政储蓄</option>
+            <option value="北京银行">北京银行</option>
+            <option value="光大银行">光大银行</option>
+            <option value="中信银行">中信银行</option>
+            <option value="平安银行">平安银行</option>
+            <option value="宁波银行">宁波银行</option>
+        </select>
+    </div>
+    <div id="card_no_info" name="card_no_info" style="display: none;">
+        <br>
+        请输入刷卡卡号:
+        <input id = "card_no" type="text" name="card_no" >
+    </div>
+    <div id="AFST0Info" style="display: none;">
+        <br><br> 结算信息(当日结算需要填写):
+        <br> 出款银行名称：<input id = "bank_name" type="text" name="bank_name" >
+        <br>出款银行卡号：<input id = "bank_num" type="text" name="bank_num" >
+        <br>出款人身份证号：<input id = "idcard" type="text" name="idcard" >
+        <br>出款人姓名：<input id = "name" type="text" name="name" >
+    </div>
+    <div id="shenfuJifen" style="display: none;font-size: 16px;">
+        <br> 结算信息(当日结算需要填写):
+        <br> 收款人姓名：<input id = "user_name" type="text" name="user_name">
+        <br>身份证号：<input id = "user_cert_no" type="text" name="user_cert_no">
+        <br>手续费：<input id = "user_fee" type="text" name="user_fee">
+        <br><span style="font-size: 14px;color: darkolivegreen">积分通道填手续费，大额封顶填费率</span>
+    </div>
+    <div id="jifenInfo" style="display: none;">
+        <br>收款银行卡号：<input id = "fc_card_no" type="text" name="fc_card_no">
+     </div>
+
+    <div id="jdjifenInfo" style="display: none;">
+        <br>付款卡手机号：<input id = "user_mobile" type="text" name="user_mobile">
+    </div>
+    <div id="jdInfo" style="display: none;">
+        <br>持卡人姓名：<input id = "id_holder" type="text" name="id_holder">
+        <br>持卡人身份证号：<input id = "id_no" type="text" name="id_no">
+        <br>银行名称：<input id = "bank" type="text" name="bank" placeholder="招商银行">
+
+    </div>
+    <div id="jdCreditInfo" style="display: none;">
+        <br>支付卡类型：<input id = "card_type" type="text" name="card_type"> 信用卡输入1，借记卡输入2
+        <br>信用卡有效日期：<input id = "card_exp" type="text" name="card_exp">例如1012
+        <br>信用卡背面后三位：<input id = "card_cvv2" type="text" name="card_cvv2">例如308
+
+    </div>
+
+    <div id="shenfuInfo" style="display: none;font-size: 16px;">
+
+        <br>支付卡有效期<input id = "pay_bank_expiry_date" type="text" name="pay_bank_expiry_date">
+        <br>支付卡背面后三位<input id = "pay_bank_cvv2" type="text" name="pay_bank_cvv2" >
+        <br>支付卡绑定的手机号<input id = "mobile_no" type="text" name="mobile_no">
+        <br>收款银行卡号：<input id = "payee_card_no" type="text" name="payee_card_no">
+        <br>收款卡绑定的手机号：<input id = "payee_mobile_no" type="text" name="payee_mobile_no">
+
+    </div>
+
+    <button id="payButton">刷卡</button>
+
+</div>
+<div id="SFJDConfirm" style="width:85%;margin: 0 auto;display: none" class="input_style">
+    <br><span style="font-weight: 600;">确认支付</span>
+    <div id="tokenID"></div>
+    <br>手机验证码：<input id = "verify_code" type="text" name="verify_code">
+    <br><button id="SFJDConfirmButton">确认支付</button>
+</div>
+
+
+
+<br><br><br>
+<div id="qrcodeDescribe"></div>
+<div id="qrcode" style="margin-left: 100px;">
+</div>
+
+
+
+
+    <script language="JavaScript" src="static/jquery-2.1.4.min.js"></script>
+    <script language="JavaScript" src="static/jquery.md5.js"></script>
+    <script language="JavaScript" type="text/javascript" src="static/jquery.qrcode.min.js"></script>
+    <script language="JavaScript">
+        //alert($('#channel').val())
+
+        $(function(){
+            var app_id="{{ app_id }}";
+            var bc_express_channel_type="{{ bc_express_channel_type }}";
+            var channel="{{ channel }}";
+            var token='';
+            var bc_bill_id='';
+            $('#payButton').click(function(){
+                input_list=$("#pay_paras input");//把pay_paras下面的所有input
+                console.log(input_list);
+                para_json={};
+                //console.log(input_list.length);
+                for(var input=0; input<input_list.length; input++){
+                    //console.log(input_list[input].value);
+                    para_json[input_list[input].name]=input_list[input].value;
+                }
+                //console.log(para_json);
+                para_json["app_id"]=app_id;
+                //alert('111111111111111')
+                 $.ajax({
+                     type: "get",
+                     url: "/pay_bill",
+//                     url:"http://192.168.1.123:8887/data/external/get.apps.php",
+                     data:para_json,//ajax向接口传参数
+                     dataType: "json",
+                     //jsonp: 'callback',
+//                     jsonpCallback: 'aaa',//定义回调的方法名
+                     success: function(resp){
+                         console.log(resp);
+                         if(resp["result_code"]!=0){
+                             alert(resp["errMsg"])
+                         }
+                         else {
+                             if(!!resp.html) {
+                                 console.log('xxxxxxxxxxxxxxxx');
+                                 var newWindow = window.open("","");
+                                 newWindow.document.write(resp.html);
+                             }
+                             else if(!!resp.url) {
+                                 //window.location.href = resp.url;
+                                 window.open(resp.url);//打开url的方式
+                             }
+                             else if(!!resp.code_url){
+                                 if(resp.channel.indexOf('NATIVE')){
+                                     tool="微信";
+                                 }
+                                 else if (resp.channel.indexOf('ALI')){
+                                     tool='支付宝';
+                                 }else if (resp.channel.indexOf('JD')){
+                                     tool='京东'
+                                 }
+                                 $(document).ready(function(){
+                                     var qd = '<br><br><p style="margin-left:100px;">请用'+tool+'扫下面的二维码：</p>';
+                                     $("#qrcodeDescribe").html(qd);
+                                     $("#qrcode").qrcode(resp.code_url);
+
+                                });
+                             }
+
+                             if(channel=='BC_EXPRESS'){
+                                 if( bc_express_channel_type=='24' || bc_express_channel_type=='58' || bc_express_channel_type=='59')
+                                 {
+                                     bc_bill_id = resp.id;
+                                     token = resp.token;
+                                     alert("接着请输入验证码，确认支付");
+
+                                     //alert('bc_bill_id:' + bc_bill_id + ' token:' + token);
+                                 }
+                             }
+                             else if(channel.indexOf('SCAN')>=0){
+                                 alert(resp);
+                             }
+                         }
+
+                     }
+                 })
+            });
+
+            $('#SFJDConfirmButton').click(function(){
+                var SFConfirm_para={};
+                SFConfirm_para['app_id']=app_id;
+                SFConfirm_para['token']=token;
+                SFConfirm_para['bc_bill_id']=bc_bill_id;
+                SFConfirm_para['verify_code']=$('#verify_code').val();
+                 $.ajax({
+                     type: "get",
+                     url: "/SFConfirm",
+                     data:SFConfirm_para,//ajax向接口传参数
+                     dataType: "json",
+                     success: function(resp){
+                         if(resp["result_code"]!=0){
+                             alert(resp["errMsg"])
+                         }else {
+                         alert(resp.result_msg);
+                         }
+                     }
+                 })
+            });
+
+            $('#jinjianButton').click(function () {
+                var jinjian_para={};
+                jinjian_para['app_id']=app_id;
+                jinjian_input_list=$('#jinjian input');//jinjian这个id下的input都找出来
+                console.log(jinjian_input_list);
+                for(var j=0; j<jinjian_input_list.length;j++){
+                    jinjian_para[jinjian_input_list[j].name]=jinjian_input_list[j].value;
+                }
+                console.log(jinjian_para);
+                $.ajax({
+                     type: "get",
+                     url: "/jinjian",
+                     data:jinjian_para,//ajax向接口传参数
+                     dataType: "json",
+                     //jsonp: 'callback',
+//                     jsonpCallback: 'aaa',//定义回调的方法名
+                     success: function(resp){
+                         //alert(resp.html);
+                         console.log(resp);
+                         if(resp.result_code!=0){
+                             alert(resp.errMsg);
+                         }
+                         else if (!!resp.html){
+                             var newWindow1 = window.open("about:blank","_blank");
+                             newWindow1.document.write(resp.html + "<script type='text/JavaScript'>dosubmit();<\/script>");
+                             //document.write(resp.html);
+
+                         }
+                     }
+
+            });
+        });
+
+
+            if($('#channel').val()=='BC_EXPRESS'){
+                <!-- 21是AFST0通道 -->
+                if(bc_express_channel_type==10){
+                    $('#card_no_info').css({'display':'block'});
+                    $('#AFST0Info').css({'display':'block'});
+                }
+                <!-- 21是积分通道 -->
+                if(bc_express_channel_type==21){
+                    $('#shenfuJifen').css({'display':'block'});
+                    $('#card_no_info').css({'display':'block'});
+                    $('#jifenInfo').css({'display':'block'});
+                }
+                <!-- 24是sf大额通道 -->
+                if(bc_express_channel_type==24){
+                    $('#shenfuJifen').css({'display':'block'});
+                    $('#card_no_info').css({'display':'block'});
+                    $('#processDescribe').css({'display':'block'});
+                    $('#shenfuInfo').css({'display':'block'});
+                    $('#jinjian').css({'display':'block'});
+                    $('#SFJDConfirm').css({'display':'block'});
+                }
+                <!-- 58齐商的借贷 59齐商的借记 -->
+                if(bc_express_channel_type==59){
+                    $('#jdInfo').css({'display':'block'});
+                    $('#card_no_info').css({'display':'block'});
+                    $('#jdjifenInfo').css({'display':'block'});
+                    $('#SFJDConfirm').css({'display':'block'});
+                }
+                if(bc_express_channel_type==58){
+                    $('#jdInfo').css({'display':'block'});
+                    $('#card_no_info').css({'display':'block'});
+                    $('#jdjifenInfo').css({'display':'block'});
+                    $('#jdCreditInfo').css({'display':'block'});
+                    $('#SFJDConfirm').css({'display':'block'});
+                }
+                else {
+                    $('#card_no_info').css({'display':'block'});
+                }
+            }else {
+                $('#card_no_info').css({'display':'none'});
+                $('#expressInfo').css({'display':'none'});
+            }
+
+            if(channel=='BC_GATEWAY'){
+                $('#gatewayBank_div').css({'display':'block'});
+            }else{
+                $('#gatewayBank_div').css({'display':'none'});
+            }
+            if(channel.indexOf('SCAN')>=0){
+                $('#auth_code_div').css({'display':'block'});
+            }else {
+                $('#auth_code_div').css({'display':'none'});
+            }
+            //切换样式
+            $('#c').click(function () {
+                //alert($('.s1').attr('class').indexOf('s3'));
+                if($('.s1').attr('class').indexOf('s2') >= 0){
+                    $('.s1').removeClass('s2');
+                }else {
+                    $('.s1').addClass('s2');
+                }
+            })
+            $('#test').click(function () {
+                alert($('#agent').attr('checked'));
+            });
+
+
+
+        });
+
+
+</script>
+
+</body>
+</html>

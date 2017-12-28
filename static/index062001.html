@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>渠道参数配置测试</title>
+
+    <style>
+        .s1 div{color: #FF6C2C;}
+        .s2 div{color: #FFBB2C;}
+    </style>
+</head>
+<body style="font-size: 15px">
+<div class="s1 s2">
+    <div hidden="hidden">text1</div>
+    <div hidden="hidden">text2</div>
+</div>
+
+<button id="c" hidden="hidden">btn</button>
+
+
+<form id="get_app" >
+    <div style="width:85%;margin: 0 auto;margin-top: 74px">
+请输入email账号：<input type="text" name="email" id='email' value="test@beecloud.cn" style="height: 25px; width: 400px;"/>
+
+    <input id="get_app_submit" type="button"  value="确定">
+    </div>
+
+</form>
+<div id="sel" style="width:85%;margin: 0 auto;"></div>
+
+<form id="form" method="post" action="/bill" target="_blank" style="width:85%;margin: 0 auto;">
+    <br>
+<!--    <select id="agent" name="agent">
+        <option value="false">非特约服务商</option>
+        <option value="true">特约服务商</option>
+    </select>  -->
+    <input name="agent1" id="agent1" type="checkbox" value="true"/>是否特约服务商
+    <br><br>
+    输入app_id: <input type="text" name="app_id"  id="app_id" style="width:400px; height:25px;" />
+    <br><br>
+    输入app_secret: <input type="text" name="app_secret" id="app_secret"  style="width:400px; height:25px;" />
+    <br><br>
+    输入金额：<input id="total_fee" type="text" name="total_fee" value="1" style="width:100px; margin-top: 10px"/>分
+    <br><br>
+    选择大渠道：
+    <select id="parent_channel" name="parent_channel" style="margin-right:20px;">
+        <option value="BC">BC特惠渠道</option>
+        <option value="ALI">支付宝</option>
+        <option value="WX">微信</option>
+        <option value="UN">银联</option>
+    </select>
+    选择子渠道：
+    <select id="channel" name="channel">
+        <option value ="BC_WX_WAP">BC微信WAP</option>
+        <option value ="BC_NATIVE">BC微信扫码</option>
+        <option value="BC_WX_SCAN">BC微信刷卡</option>
+        <option value="BC_ALI_QRCODE">BC支付宝扫码</option>
+        <option value="BC_ALI_SCAN">BC支付宝刷卡</option>
+        <option value="BC_EXPRESS">BC银联快捷</option>
+        <option value="BC_GATEWAY">BC网关</option>
+        <option value="BC_ALI_WEB">BC支付宝PC网页</option>
+        <option value="BC_ALI_WAP">BC支付宝移动网页</option>
+        <option value="BC_ALI_APP">BC支付宝APP(仿)</option>
+    </select>
+    <br>
+    <div id = "auth_code_div" name="auth_code_div" style="display: none">
+        <br>
+        微信刷卡/支付宝刷卡请输入auth_code:
+        <input id = "auth_code" type="text" name="auth_code" style="width:250px; margin-top: 10px"/>
+    </div>
+    <div id="gatewayBank_div" name="getwayBank_div" style="display: none">
+        <br>
+        网关支付请选择银行bank:
+        <select id="gatewayBank" name="gatewayBank" >
+            <option value ="农业银行">农业银行</option>
+            <option value ="建设银行">建设银行</option>
+            <option value="兴业银行">兴业银行</option>
+            <option value="招商银行">招商银行</option>
+            <option value="民生银行">民生银行</option>
+            <option value="华夏银行">华夏银行</option>
+            <option value="工商银行">工商银行</option>
+            <option value="上海银行">上海银行</option>
+            <option value="中国银行">中国银行</option>
+            <option value="交通银行">交通银行</option>
+            <option value="上海浦东发展银行">上海浦东发展银行</option>
+            <option value="广东发展银行">广东发展银行</option>
+            <option value="深圳发展银行">深圳发展银行</option>
+            <option value="中国邮政储蓄">中国邮政储蓄</option>
+            <option value="北京银行">北京银行</option>
+            <option value="光大银行">光大银行</option>
+            <option value="中信银行">中信银行</option>
+            <option value="平安银行">平安银行</option>
+            <option value="宁波银行">宁波银行</option>
+        </select>
+    </div>
+    <div id="expressInfo" style="display: none;">
+        <br>
+        AFS的银联快捷，请输入card_no:
+        <input id = "card_no" type="text" name="card_no" style="width:250px; margin-top: 10px">
+        <br><br> AFS的T0银联快捷,以下四项信息必填:
+        <br> 出款银行名称：<input id = "bank_name" type="text" name="bank_name" style="width:250px; margin-top: 10px">
+        <br>出款银行卡号：<input id = "bank_num" type="text" name="bank_num" style="width:250px; margin-top: 10px">
+        <br>出款人身份证号：<input id = "idcard" type="text" name="idcard" style="width:250px; margin-top: 10px">
+        <br>出款人姓名：<input id = "name" type="text" name="name" style="width:250px; margin-top: 10px">
+    </div>
+    <br>
+    <span id="controlOption" style="color: darkseagreen; display: inline-block; cursor: pointer;">展开选填信息</span>
+    <div id="option" style="display: none;">
+        <br>
+        optional(选填): <textarea id = "optional" name="optional" style="width: 300px; height: 130px; vertical-align: top"></textarea>
+        <br><br>
+        notify_url(选填)：<input id = "notify_url" name = 'notify_url' type="text" style="width:300px;">
+        <br><br>
+        host(选填):
+        <select id="host" name="host">
+            <option value ="api">api</option>
+            <option value ="82.71">82.71</option>
+            <option value ="75.44">75.44</option>
+            <option value ="40.236">40.236</option>
+            <option value ="66.169">66.169</option>
+            <option value ="82.220">82.220</option>
+            <option value ="120.98">120.98</option>
+            <option value ="222.220">222.220</option>
+            <option value ="other">other</option>
+        </select>
+    </div>
+    <div id="error" style="color: red"></div>
+    <div id="inputHostDiv"></div>
+    <div style="margin-top: 30px; margin-left: 200px;">
+        <input id="lala" type="submit" style="width: 100px; height: 40px; text-align: center; font-size: 18px;" value="支付">
+    </div>
+
+</form>
+
+
+    <script language="JavaScript" src="static/jquery-2.1.4.min.js"></script>
+    <script language="JavaScript" src="static/jquery.md5.js"></script>
+    <script language="JavaScript">
+
+        $(function(){
+            //切换样式
+            $('#c').click(function () {
+                //alert($('.s1').attr('class').indexOf('s3'));
+                if($('.s1').attr('class').indexOf('s2') >= 0){
+                    $('.s1').removeClass('s2');
+                }else {
+                    $('.s1').addClass('s2');
+                }
+            })
+            $('#test').click(function () {
+                alert($('#agent').attr('checked'));
+            });
+
+//            var expressHtml='AFS的银联快捷，请输入card_no:<input id = "card_no" type="text" name="card_no" style="width:250px; margin-top: 10px"><br><br> AFS的T0银联快捷,以下四项信息必填:<br> 出款银行名称：<input id = "bank_name" type="text" name="bank_name" style="width:250px; margin-top: 10px"><br>出款银行卡号:<input id = "bank_num" type="text" name="bank_num" style="width:250px; margin-top: 10px"><br>出款人身份证号:<input id = "idcard" type="text" name="idcard" style="width:250px; margin-top: 10px"><br>出款人姓名:<input id = "name" type="text" name="name" style="width:250px; margin-top: 10px">'
+            $('#channel').change(function () {
+                if($('#channel option:selected').val()=="BC_EXPRESS"){
+                    $('#expressInfo').css({'display':'block'});
+                }else {
+                    $('#expressInfo').css({'display':'none'});
+                }
+                if($('#channel option:selected').val()=='BC_GATEWAY'){
+                    $('#gatewayBank_div').css({'display':'block'});
+                }else{
+                    $('#gatewayBank_div').css({'display':'none'});
+                }
+
+                if($('#channel option:selected').val().indexOf('SCAN')>=0){
+                    $('#auth_code_div').css({'display':'block'});
+                }else {
+                    $('#auth_code_div').css({'display':'none'});
+                }
+
+            });
+            $('#controlOption').click(function () {
+                $('#option').toggle();
+
+                if($('#option').is(":hidden")){
+                    $(this).text('展开选填内容');
+                }else {
+                    $(this).text('隐藏选填内容');
+                }
+            });
+
+            function validateIP(str){
+                return !!str.match(/^((25[0-5]|2[0-4]\d|[01]?\d\d?)($|(?!\.$)\.)){4}$/);
+            }
+            $('#host').click(function () {
+            if($('#host option:selected' ).val()=="other"){
+                var html1='请输入host：<input id = "inputHost" type="text" name="inputHost" style="width:250px; margin-top: 10px">';
+                $('#inputHostDiv').html(html1);
+                $('#inputHost').bind("input",function () {
+                    var vIP = validateIP($(this).val());
+//                    vIP = vIP || 'null';
+                    if(!vIP) {
+                        var html2='ip不合法';
+                        $('#error').html(html2);
+//                        $('#inputHostDiv').html(html1);
+                    }
+                    else {
+                        var html3='';
+                        $('#error').html(html3);
+                    }
+                })
+            }
+            else {
+                var html2=''
+                $('#inputHostDiv').html(html2);
+            }
+            });
+
+
+            var channel = {
+                BC_WX_WAP:'BC微信WAP',
+                BC_NATIVE:'BC微信扫码',
+                BC_WX_SCAN:'BC微信刷卡',
+                BC_ALI_QRCODE:'BC支付宝扫码',
+                BC_ALI_SCAN:'BC支付宝刷卡',
+                BC_EXPRESS:'BC银联快捷',
+                BC_ALI_WEB:'BC支付宝PC网页',
+                BC_ALI_WAP:'BC支付宝移动网页',
+                BC_ALI_APP:'BC支付宝APP(仿)',
+                ALI_WEB:'支付宝网页',
+                ALI_WAP:'支付宝移动网页',
+                ALI_QRCODE:'支付宝网页扫码',
+                ALI_OFFLINE_QRCODE:'支付宝扫码',
+                ALI_SCAN:'支付宝刷卡',
+                WX_NATIVE:'微信扫码',
+                WX_SCAN:'微信刷卡',
+                UN_WEB:'银联网页',
+                UN_WAP:'银联移动网页'
+            };
+            var parent_channel={
+                BC:['BC_WX_WAP','BC_NATIVE','BC_WX_SCAN','BC_ALI_QRCODE','BC_ALI_SCAN','BC_EXPRESS','BC_ALI_WEB','BC_ALI_WAP','BC_ALI_APP'],
+                ALI:['ALI_WEB','ALI_WAP','ALI_QRCODE','ALI_OFFLINE_QRCODE','ALI_SCAN'],
+                WX:['WX_NATIVE','WX_SCAN'],
+                UN:['UN_WEB','UN_WAP']};
+            $('#parent_channel').change(function () {
+                p_channel=$('#parent_channel option:selected').val()
+                var html = '';
+                for(var i in parent_channel[p_channel]){
+
+                    html += '<option value="' + parent_channel[p_channel][i] + '">' + channel[parent_channel[p_channel][i]] + '</option>';
+                }
+                $('#channel').html(html)
+            });
+
+//            alert(1);
+            var json=[];
+            var select_value= $("app_select").val();
+
+            var app_id = 'c37d661d-7e61-49ea-96a5-68c34e83db3a';
+            var app_secret = 'c37d661d-7e61-49ea-96a5-68c34e83db3a';
+            var tt=new Date().getTime();
+//            alert(tt);
+            var sign = $.md5(app_id+tt+app_secret);
+            console.log(sign);
+            $('#get_app_submit').click(function(){
+                 $.ajax({
+                     type: "",
+                     url: "http://internal.beecloud.cn/data/external/get.apps.php",
+//                     url:"http://192.168.1.123:8887/data/external/get.apps.php",
+                     data:{'app_id':app_id,'timestamp':tt,'app_sign':sign,'email':$("#email").val()},//ajax向接口传参数
+                     dataType: "jsonp",
+                     jsonp: 'callback',
+//                     jsonpCallback: 'aaa',//定义回调的方法名
+                     success: function(app_values){
+                         console.log(app_values);
+                         var html = '应用列表:<select id="app_select" style="margin-top: 22px"><option value="-1">请选择应用</option>';
+                         var json = app_values["apps"];
+                         for(var i=0; i<json.length; i++){
+                             html += '<option value="' + i +'">' + json[i]["app_name"] + '</option>';
+                         }
+                         html += '</select>';
+                         $('#sel').html(html);
+
+//jquery里一般是change,click事件，没有on
+                         $('#app_select').change(function () {
+                             console.log($("#app_select option:selected").val());
+                             var app_no = $("#app_select option:selected").val();
+                             if(app_no=='-1')
+                             {
+                                 $("#app_id").val('');
+                                 $("#app_secret").val('');
+                             }else {
+                                 $("#app_id").val(json[app_no]['app_id']);
+                                 $("#app_secret").val(json[app_no]['app_secret']);
+                             }
+                         })
+
+                         //select 在jquery里使用
+//                         window.select_app = function(val) {
+//                             alert(val);
+//                             var app_no = $("#app_select").val();
+//                             $('#app_id').val(json[app_no]["app_id"]);
+//                             console.log('app_id')
+//                             console.log($('#app_id').val());
+//                             $('#app_secret').val(json[app_no]["app_secret"]);
+//                         }
+                     },
+                     error:function (data) {
+                         alert('请登录internal');
+                     }
+                 });
+            });
+        });
+
+
+
+
+
+     document.getElementById("lala").addEventListener('click',function(e){
+         e.preventDefault();
+        var auth_code = $.trim(document.getElementById("auth_code").value);
+        var channel = $.trim(document.getElementById("channel").value);
+         if($("#app_id").val()=='' || $("#app_secret").val()==''){
+             alert("app_id或者app_secret 不能为空");
+             return;
+         }
+         if(channel == "BC_ALI_SCAN" || channel=="BC_WX_SCAN" || channel=='WX_SCAN' || channel == 'ALI_SCAN'){
+            if(auth_code == "")
+            {
+                alert("请输入auth_code");
+
+            }
+            else{
+                $("#form").submit();
+            }
+         }
+         else {
+             $("#form").submit();
+    //         document.getElementById('form').submit();
+         }
+
+     })
+</script>
+
+</body>
+</html>

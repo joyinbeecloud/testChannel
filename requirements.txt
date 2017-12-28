@@ -1,0 +1,6 @@
+flask
+uuid
+requests
+json
+hashlib
+urllib

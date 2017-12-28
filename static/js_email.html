@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <title>jsbutton选择应用</title>
+</head>
+<body>
+<form id="get_app" method="get">
+    <div style="width:85%;margin: 0 auto;margin-top: 74px">
+请输入email账号：<input type="text" name="email" id='email' value="zhihaoq@beecloud.cn" style="height: 25px; width: 400px;"/>
+
+    <input id="get_app_submit" type="button"  value="确定">
+    </div>
+
+</form>
+<div id="sel" name="'sel" style="width:85%;margin: 0 auto;">
+</div>
+
+    <form id="jsform" method="get" action="/jsbutton/button" target="_blank" style="width:85%;margin: 0 auto;">
+        <input type="text" name="app_id"  id="app_id" hidden='hidden' style="width:400px; height:25px;" />
+        <input type="text" name="app_secret"  id="app_secret" hidden='hidden' style="width:400px; height:25px;" />
+        <br>
+        输入金额：<input id="total_fee" type="text" name="total_fee" value="1" style="width:100px; margin-top: 10px"/>分
+        <br><br>
+        card_no:<input id ="card_no" type="text" name="card_no" style="width:400px; height:25px;">
+        <br><br>
+        host(选填):
+        <select id="host" name="host">
+            <option value ="api">api</option>
+            <option value ="82.71">82.71</option>
+            <option value ="66.169">66.169</option>
+            <option value ="82.220">82.220</option>
+            <option value ="222.220">222.220</option>
+            <option value ="apitest22">apitest22</option>
+            <option value ="apitest98">apitest98</option>
+            <option value ="api8271">api8271</option>
+            <option value ="222.220">42.22</option>
+        </select>
+        <div id="error" style="color: red"></div>
+        <div style="margin-top: 30px; margin-left: 200px;">
+        <input id="lala" type="submit" style="width: 100px; height: 40px; text-align: center; font-size: 18px;" value="支付">
+    </div>
+
+
+    </form>
+
+
+
+
+
+
+    <script language="JavaScript" src="static/jquery-2.1.4.min.js"></script>
+    <script language="JavaScript" src="static/jquery.md5.js"></script>
+    <script language="JavaScript">
+
+        $(function() {
+            $('#get_app_submit').click(function () {
+                $.ajax({
+                    type: "get",
+                    url: "/jsbutton/get_app",
+                    data: {'email': $("#email").val()},//ajax向接口传参数
+                    dataType: "json",                   //jsonp: 'callback',
+//                     jsonpCallback: 'aaa',//定义回调的方法名
+                    success: function (data) {
+                        console.log(data);
+                        var html = '应用列表: <select id="app_select" style="margin-top: 22px;padding: 4px"><option value="-1">请选择应用</option>';
+                        apps=data['apps']
+                        console.log(apps.length)
+                        for (var i = 0; i < apps.length; i++) {
+                            html += '<option value="' + i + '">' + apps[i]["app_name"] + '</option>';
+                        }
+                        html += '</select>';
+                        $('#sel').html(html);
+
+//jquery里一般是change,click事件，没有on
+                        $('#app_select').change(function () {
+                            console.log($("#app_select option:selected").val());
+                            var app_no = $("#app_select option:selected").val();
+                            if (app_no == '-1') {
+                                $("#app_id").val('');
+                                $("#app_secret").val('');
+                            } else {
+                                $("#app_id").val(apps[app_no]['app_id']);
+                                $("#app_secret").val(apps[app_no]['app_secret']);
+                            }
+                        });
+                        //app_select change finish
+
+                    },
+                    error:function (data) {
+                        alert(data)
+                    }
+
+                });
+            });
+
+            document.getElementById("lala").addEventListener('click', function (e) {
+                e.preventDefault();
+                if ($("#app_id").val() == '') {
+                    alert("请选择应用");
+                    return;
+                }
+                else {
+                    $("#jsform").submit();
+                    //         document.getElementById('form').submit();
+                }
+
+            })
+
+        });
+</script>
+
+
+
+
+
+</body>
+</html>

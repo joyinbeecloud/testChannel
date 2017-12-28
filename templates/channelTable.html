@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Dashboard">
+    <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
+
+    <title>BeeCloud 备忘录 </title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="static/css/bootstrap.css" rel="stylesheet">
+    <!--external css-->
+    <link href="static/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <!-- Custom styles for this template -->
+    <link href="static/css/style.css" rel="stylesheet">
+    <link href="static/css/style-responsive.css" rel="stylesheet">
+    <link href="static/css/table-responsive.css" rel="stylesheet">
+
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="static/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+  </head>
+
+  <body>
+    <a href="/logout" style="position:absolute; right:30px; top:15px;">退出</a>
+    <section class="wrapper">
+          	<!--<h3><i class="fa fa-angle-right"></i> Responsive Table Examples</h3>-->
+		  		<div class="row mt">
+			  		<div class="col-lg-12">
+                      <div class="content-panel">
+                      <h4><i class="fa fa-angle-right"></i> 各渠道开发和使用情况 </h4>
+                      <button id="add_channel" name="add_channel">➕新增渠道</button>
+                          <div id="add_channel_page" style="" class="all_pop_page">
+                              <span id ="back" class="chacha">返回</span><br><br>
+                              <table id = "add_channel_table" class="aaa"><tr>
+                                  <tr><td>渠道名:</td><td><input id = "channel" type="text" name="channel"></td></tr>
+                                  <tr><td>限额:</td><td><input id = "limit_amount" type="text" name="limit_amount"></td></tr>
+                                  <tr><td>channelSourceNumber:</td><td><input id = "channelSourceNumber" type="text" name="channelSourceNumber"></td></tr>
+                                  <tr><td>结算方名称:</td><td><input id = "channelSourceName" type="text" name="channelSourceName"></td></tr>
+                                  <tr><td>成本:</td><td><input id = "cost" type="text" name="cost"></td></tr>
+                                  <tr><td>完成时间:</td><td><input type="text" value="" id="datetimepicker" name="datetimepicker" data-date-format="yyyy-mm-dd" style="background-color: #eeeeee" readonly ></td></tr>
+                                  <tr><td>开发者:</td><td><input id = "developer" type="text" name="developer"></td></tr>
+                                  <tr><td>isBill:</td><td><select id = "isBill" name="isBill"><option value="true">✅</option><option value="false" selected>✘</option></select> </td></tr>
+                                  <tr><td>是否接入秒支付button:</td><td><select id = "jsbutton" name="jsbutton"><option value="true">✅</option><option value="false" selected>✘</option></select></td></tr>
+                                  <tr><td>能否退款:</td><td><select id = "isRefund" name="isRefund"><option value="true">✅</option><option value="false" selected>✘</option></select></td></tr>
+                                  <tr><td>isTransfer:</td><td><select id = "isTransfer" name="isTransfer"><option value="true">✅</option><option value="false" selected>✘</option></select></td></tr>
+                                  <tr><td>能否对账:</td><td><select id = "isVerify" name="isVerify"><option value="true">✅</option><option value="false" selected>✘</option></select></td></tr>
+                                  <tr><td>是否存活:</td><td><select id = "isLive" name="isLive"><option value="true">✅</option><option value="false" selected>✘</option></select></td></tr>
+                                  <tr><td>备注:</td><td><textarea id = "note" type="text" name="note"></textarea></td></tr>
+
+                                  </table>
+                              <button id="save_new_channel" name="save_new_channel" >保存</button>
+                          </div>
+                          <section id="table_show" name="table_show">
+                          </section>
+                  </div><!-- /content-panel -->
+               </div><!-- /col-lg-4 -->
+		  	</div><!-- /row -->
+
+    </section><! --/wrapper -->
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="static/jquery-2.1.4.min.js"></script>
+    <!--这三个js是为时间控件引入的 -->
+    <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="static/js/bootstrap-datetimepicker.fr.js" charset="UTF-8"></script>
+
+    <script>
+        var table_content={{ table|tojson|safe}};
+        console.log(table_content);
+        var table_html='<table id="table" class="aaa bbb input_style" >' +
+                        '<tr><th>渠道</th>'+
+                                '<th>渠道结算来源</th>'+
+                                '<th>渠道编号</th>'+
+                                '<th>支付</th>'+
+                                '<th>退款</th>'+
+                                '<th>打款</th>'+
+                                '<th>对账</th>'+
+                                '<th>秒支付button</th>'+
+                                '<th>开发者</th>'+
+                                '<th>上线与否</th>'+
+                                '<th>成本费率</th>'+
+                                '<th>备注</th>'+
+                                '<th style="width:50px">操作</th>'+
+                            '</tr>';
+
+        for(var i=0; i<table_content.length; i++){
+            var table=table_content[i];
+            //console.log(table);
+            if(i%2!=1){
+                table_html +='<tr class="blue_bg" id="tr'+i+'">'//设置行的背景色
+            }
+            else {
+                table_html +='<tr>'
+            }
+            table_html += '<td><input name="channel" value=' + table["channel"] +'></input>'+
+                    '<input name="id" style="display: none;" value = '+table["id"]+'></input></td>'+
+                    '<td><input name="channelSourceName" value='+table["channelSourceName"]+'></td>'+
+                    '<td width="10px"><input name="channelSourceNumber" value='+dealNote(table["channelSourceNumber"])+'></td>'+
+                    '<td>'+select_V("isBill",table["isBill"])+'</td><td>'+select_V("isRefund",table["isRefund"])+'</td>'+
+                    '<td>'+select_V("isTransfer",table["isTransfer"])+'</td><td>'+select_V("isVerify",table["isVerify"])+'</td>'+
+                    '<td>'+select_V("jsbutton",table["jsbutton"])+'</td><td><input name="developer" style="width:45px;" value='+
+                    table["developer"]+'></td><td>'+ select_V("isLive",table["isLive"])+'</td><td><textarea name="cost" cols="17" disabled="true">'+
+                    dealNote(table["cost"])+'</textarea></td><td width="150px"><textarea name="note" cols="20" disabled="true">'+ dealNote(table["note"])+
+                    '</textarea></td><td width="60px"><span class="edit">编辑</sapn></td><td><span class="save" style="margin-left:10px">保存</span>'+
+                    '</td></tr>';
+
+        }
+        table_html += '</table>';
+        $('#table_show').html(table_html);
+        $('#table_show').find('input').attr("readonly","true");
+
+        <!--由于动态生成的html不能直接用click事件，一定要用一个不是动态生成的去找 这里是用class去找-->
+        $('#table_show').on("click","#table .edit",function () {
+            $(this).parents('table').find('input').attr("readonly",true);
+            $(this).parents('table').find('select,textarea').attr("disabled",true);
+            $(this).parents('table').find('input,select,textarea').removeClass("editcss");
+            console.log($(this).parents('table').find('input'));
+            //console.log($(this).parents('.blue_bg').find('select'));
+            $(this).parents('tr').find('input,select,textarea').addClass("editcss");
+            $(this).parents('tr').find('input').prop("readonly",false);
+            $(this).parents('tr').find('select,textarea').prop("disabled",false);
+        });
+
+        $('#datetimepicker').datetimepicker({
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+        });
+        $('#table_show').on("click","#table .save",function () {
+            //console.log($(this).parents('tr').find('input').attr("class"));
+            //根据id找和根据父元素找不一样的处理
+            var input_list = $(this).parents('tr').find('input,select,textarea');
+            var para_json={};
+            for(var input=0; input<input_list.length; input++){
+                    para_json[input_list[input].name]=input_list[input].value;
+                }
+            console.log(para_json);
+            $.ajax({
+                type: "get",
+                url: "/channelTable/modify_channels_Info",
+                data:para_json,//ajax向接口传参数
+                dataType: "json",
+                success: function(resp){
+                    console.log(resp);
+                    alert(resp['msg']);
+                    location.reload();
+                }
+            })
+        });
+        $('#save_new_channel').click(function () {
+            console.log($('#datetimepicker').val());
+            //console.log($(this).parents('tr').find('input').attr("class"));
+            var save_channel_inputs = $("#add_channel_page").find("input,select,textarea");
+            var save_channel_json={};
+            for(var input=0; input<save_channel_inputs.length; input++){
+                    save_channel_json[save_channel_inputs[input].name]=save_channel_inputs[input].value;
+                }
+            console.log(save_channel_json);
+            //console.log('select_val:'+select_val);
+            $.ajax({
+                type: "get",
+                url: "/channelTable/create_channel",
+                data:save_channel_json,//ajax向接口传参数
+                dataType: "json",
+                success: function(resp){
+                    console.log(resp);
+                    alert(resp['msg']);
+                    location.reload();
+                }
+            })
+        });
+
+
+
+        $('#add_channel').click(function () {
+            $('#add_channel_page').css({'display':'block'});
+        });
+
+        $('#back').click(function(){
+            $('#add_channel_page').css({'display':'none'});
+        });
+        function dealNote(v) {
+            return !v ? "":v;
+        }
+        function select_V(cl,v){
+            return '<select name="'+cl+'"disabled="true"><option value="true" ' + (!!v ? "selected" : "") + '>✅</option><option value="false"  ' + (!v ? "selected" : "") + '>✘</option></select>';
+        }
+
+
+    </script>
+    <!--script for this page-->
+
+
+  </body>
+</html>
