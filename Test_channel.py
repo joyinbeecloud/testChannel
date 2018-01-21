@@ -48,7 +48,9 @@ hosts={
     'apitestsq':'https://apitestsq.beecloud.cn/2',
     '42.22':'http://123.56.42.22:8080/2',
     'apitest22':'https://apitest22.beecloud.cn/2',
-    'api8271':'https://api8271.beecloud.cn/2'
+    'api8271':'https://api8271.beecloud.cn/2',
+    '191.185':'http://182.92.191.185:8080/2',
+    'apitest185':'https://apitest185.beecloud.cn/2'
     }
 
 
@@ -123,6 +125,9 @@ def bill():
     store_id = request.form['store_id']
     if store_id=='':
         store_id=None
+    partition_id = request.form['partition_id']
+    if partition_id=='':
+        partition_id=None
     opt = request.form['optional']
     ana = request.form['analysis']
     pay_ip = request.remote_addr
@@ -184,8 +189,9 @@ def bill():
         'notify_url':notify_url,
         'bank':bank,
         'buyer_id':buyer_id,
-        'analysis':analysis,
+        # 'analysis':analysis,
         'store_id':store_id,
+        'partition_id':partition_id
         }
     # print '传入参数：%r'%online_bill_values
     if agent == 'true':
