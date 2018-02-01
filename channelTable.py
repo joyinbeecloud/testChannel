@@ -2,38 +2,22 @@
 from flask import Blueprint
 from flask import Flask, request, redirect, render_template,Markup
 import json
-from common_func import sign_md5,get_app
+from common_func import *
 from datetime import datetime,date
-import MySQLdb,time
+import time
 
 channelTable_view = Blueprint('channelTable', __name__)
 
-def connect_db():
-    global db
-    global cursor
-    db = MySQLdb.connect("123.56.111.169", "beecloud", "beecloud617", "beetest", charset='utf8')
-    cursor = db.cursor()
-
 def query_data():
-    connect_db()
+    db_resp = connect_db()
+    db=db_resp['db']
+    cursor = db_resp['cursor']
     query_sql="select * from channelsInfo"
-    channels_num = cursor.execute(query_sql)
+    cursor.execute(query_sql)
     channels = cursor.fetchall()
     db.commit()
     db.close()
     return channels
-def modify_data(modify_sql):
-    connect_db()
-    try:
-        cursor.execute(modify_sql)
-        db.commit()
-        return 1
-    except():
-        db.rollback()
-        # print ()
-        print("modify_db_fail")
-        return 0
-
 
 
 def change_str_to_Bool(v):

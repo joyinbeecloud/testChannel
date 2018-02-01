@@ -1,5 +1,5 @@
 # encoding: utf-8
-import time,logging
+import time
 from logging import NullHandler
 from common_func import *
 import requests
@@ -9,6 +9,7 @@ from flask import Flask, request, redirect, render_template,Markup
 from haohuihua import haohuihua_view
 from button import jsbutton_view
 from channelTable import channelTable_view
+from webhook import webhook_view
 import webbrowser
 
 
@@ -19,21 +20,8 @@ app=Flask(__name__)
 app.register_blueprint(haohuihua_view, url_prefix='/user_info_3h')
 app.register_blueprint(jsbutton_view, url_prefix='/jsbutton')
 app.register_blueprint(channelTable_view, url_prefix='/channelTable')
-
-logger = logging.getLogger('Test_channel')
-logger.setLevel(logging.DEBUG)
-# 创建一个handler，用于写入日志文件
-fh = logging.FileHandler('/test201710311202.log')
-fh.setLevel(logging.DEBUG)
-# 再创建一个handler，用于输出到控制台
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-ch.setFormatter(formatter)
-fh.setFormatter(formatter)
-logger.addHandler(fh)
-logger.addHandler(ch)
+app.register_blueprint(webhook_view,url_prefix='/webhook')
+logger = log()
 hosts={
     'api':'https://api.beecloud.cn/2',
     '82.71':'http://123.56.82.71:8080/2',
@@ -487,41 +475,6 @@ def SFConfirm():
         return resp
 
 
-@app.route('/webhook',methods=['POST'])
-def webhook():
-    ip = request.remote_addr
-    # print 'webhook from:' + ip
-    json_data = request.get_json()
-    logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
-    if str(ip) =='123.57.146.46' or str(ip) == '182.92.114.175' or str(ip) == '123.57.81.91':
-        # 第一步：验证数字签名
-        # 从beecloud传回的sign
-        bc_sign = json_data['signature']
-        app_id = json_data['app_id']
-        bill_no = json_data['transaction_id']
-        transaction_fee = json_data['transaction_fee']
-        transaction_type = json_data['transaction_type']
-        channel_type = json_data['channel_type']
-
-        if app_id!=None:
-            resp_dict = get_app(app_id)
-            app_master_secret = resp_dict['master_secret']
-            signature = sign_md5(app_id + bill_no + transaction_type + channel_type + str(
-                transaction_fee) + app_master_secret)
-            # 判断两个sign是否一致
-            if bc_sign != signature:
-                logger.info("%s signature cannot match"%bill_no)
-                return "signature cannot match"
-            else:
-                logger.info('%s webhook success' % bill_no)
-                return 'success'
-        else:
-            logger.info("%s app_id is None" % bill_no)
-            return "app_id is None"
-    else:
-        # print 'ip is not from beecloud,ip is:' + ip
-        logger.info('ip is not from beecloud,ip is:' + ip)
-        return 'ip is not from beecloud,ip is:' + ip
 
 
 @app.route('/test_return_url',methods=['GET','POST'])

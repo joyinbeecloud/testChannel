@@ -1,6 +1,7 @@
 # encoding: utf-8
-import requests,urllib,json,hashlib,time
-
+import requests,urllib,json,hashlib,time,logging
+import MySQLdb
+import traceback
 
 def get_app(app_id):
     tt = int(time.time()) * 1000
@@ -11,7 +12,7 @@ def get_app(app_id):
     url_temp = "http://internal.beecloud.cn/data/external/get.apps.php"
     # url_temp = "http://internal.comsunny.com/data/external/get.apps.php"
     resp = requests.get(url_temp, params=data1).content
-    print resp
+    # print resp
     resp_cut = resp[1:len(resp) - 1]
     resp_dict = json.loads(resp_cut)#字符串转化成字典。dumps字典转换成字符串
     # print(type(resp_dict))
@@ -100,3 +101,50 @@ def url_encode(paramm):
 def attachAppSign(reqPara,bcapp):
     bcapp.app_id
 
+
+def log():
+    logger = logging.getLogger('Test_channel')
+    logger.setLevel(logging.DEBUG)
+    # 创建一个handler，用于写入日志文件
+    fh = logging.FileHandler('/test201710311202.log')
+    fh.setLevel(logging.DEBUG)
+    # 再创建一个handler，用于输出到控制台
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    ch.setFormatter(formatter)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+    logger.addHandler(ch)
+    return logger
+
+
+def connect_db():
+    db = MySQLdb.connect("123.56.111.169", "beecloud", "beecloud617", "beetest", charset='utf8')
+    cursor = db.cursor()
+    return {"db":db,"cursor":cursor}
+
+def modify_data(modify_sql):
+    db_resp = connect_db()
+    db = db_resp['db']
+    cursor = db_resp['cursor']
+    try:
+        cursor.execute(modify_sql)
+        db.commit()
+        return 1
+    except():
+        db.rollback()
+        # print ()
+        print("modify_db_fail")
+        return 0
+
+
+# apps=get_app('afae2a33-c9cb-4139-88c9-af5c1df472e1')
+# print apps
+# json_map={"aa":11,"bb":22}
+# try:
+#     for key in json_map:
+#         print json_map['www']
+# except Exception,e:
+#     print repr(e)
