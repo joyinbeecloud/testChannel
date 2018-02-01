@@ -21,7 +21,7 @@ def query_bill(query_param):
 
 
 
-@webhook_view.route('/webhook',methods=['POST'])
+@webhook_view.route('/',methods=['POST'])
 def webhook():
     bill_query_param={}
     webhook_param = {}
