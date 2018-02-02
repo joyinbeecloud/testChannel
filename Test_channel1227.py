@@ -146,7 +146,7 @@ def bill():
     # optional['name'] = name
     noti = request.form['notify_url']
     if noti == '':
-        notify_url = 'http://mock.beecloud.cn:8001/webhook'
+        notify_url = 'http://mock.beecloud.cn:8001/webhook/verify'
     else:
         notify_url = noti
 
@@ -291,7 +291,7 @@ def pay_bill():
         'card_no': card_no,
         'return_url': 'http://beecloud.cn',
         'optional': optional,
-        'notify_url': 'https://mock.beecloud.cn:8001',
+        'notify_url': 'https://mock.beecloud.cn:8001/verify',
         'id_holder':id_holder,
         'id_no':id_no,
         'bank':bank,

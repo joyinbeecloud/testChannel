@@ -143,7 +143,7 @@ def bill():
     # optional['name'] = name
     noti = request.form['notify_url']
     if noti == '':
-        notify_url = 'http://mock.beecloud.cn:8001/webhook'
+        notify_url = 'http://mock.beecloud.cn:8001/webhook/verify'
     else:
         notify_url = noti
 
@@ -286,7 +286,7 @@ def pay_bill():
         'card_no': card_no,
         'return_url': 'http://beecloud.cn',
         'optional': optional,
-        'notify_url': 'https://mock.beecloud.cn:8001',
+        'notify_url': 'https://mock.beecloud.cn:8001/webhook/verify',
         'id_holder':id_holder,
         'id_no':id_no,
         'bank':bank,
@@ -473,7 +473,41 @@ def SFConfirm():
         resp = json.dumps(resp)
         logger.info('SFConfirm_result:%s' % resp)
         return resp
+@app.route('/webhook',methods=['POST'])
+def webhook():
+    ip = request.remote_addr
+    # print 'webhook from:' + ip
+    json_data = request.get_json()
+    logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
+    if str(ip) =='123.57.146.46' or str(ip) == '182.92.114.175' or str(ip) == '123.57.81.91':
+        # 第一步：验证数字签名
+        # 从beecloud传回的sign
+        bc_sign = json_data['signature']
+        app_id = json_data['app_id']
+        bill_no = json_data['transaction_id']
+        transaction_fee = json_data['transaction_fee']
+        transaction_type = json_data['transaction_type']
+        channel_type = json_data['channel_type']
 
+        if app_id!=None:
+            resp_dict = get_app(app_id)
+            app_master_secret = resp_dict['master_secret']
+            signature = sign_md5(app_id + bill_no + transaction_type + channel_type + str(
+                transaction_fee) + app_master_secret)
+            # 判断两个sign是否一致
+            if bc_sign != signature:
+                logger.info("%s signature cannot match"%bill_no)
+                return "signature cannot match"
+            else:
+                logger.info('%s webhook success' % bill_no)
+                return 'success'
+        else:
+            logger.info("%s app_id is None" % bill_no)
+            return "app_id is None"
+    else:
+        # print 'ip is not from beecloud,ip is:' + ip
+        logger.info('ip is not from beecloud,ip is:' + ip)
+        return 'ip is not from beecloud,ip is:' + ip
 
 
 

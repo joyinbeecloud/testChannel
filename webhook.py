@@ -36,26 +36,26 @@ def webhook():
     bill_no=''
     createdAt = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
 
-    try:
-        json_data = request.get_json()
-        logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
-        bc_sign = json_data['signature']
-        app_id = json_data['app_id']
-        bill_no = json_data['transaction_id']
-        transaction_fee = json_data['transaction_fee']
-        transaction_type = json_data['transaction_type']
-        channel_type = json_data['channel_type']
-        webhook_bill_id = json_data['id']
-        trade_success = json_data['trade_success']
-        message_detail = json_data['message_detail']
-        optional = json_data['optional']
-        sub_channel_type = json_data['sub_channel_type']
-        bill_fee = json_data['bill_fee']
-        discount = json_data['discount']
-        coupon_id = json_data['coupon_id']
-    except Exception,e:
-        logger.info(traceback.print_exc(e))
-        return traceback.print_exc(e)
+    # try:
+    json_data = request.get_json()
+    logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
+    bc_sign = json_data['signature']
+    app_id = json_data['app_id']
+    bill_no = json_data['transaction_id']
+    transaction_fee = json_data['transaction_fee']
+    transaction_type = json_data['transaction_type']
+    channel_type = json_data['channel_type']
+    webhook_bill_id = json_data['id']
+    trade_success = json_data['trade_success']
+    message_detail = json_data['message_detail']
+    optional = json_data['optional']
+    sub_channel_type = json_data['sub_channel_type']
+    bill_fee = json_data['bill_fee']
+    discount = json_data['discount']
+    coupon_id = json_data['coupon_id']
+    # except Exception,e:
+    #     logger.info(traceback.print_exc(e))
+    #     return '获取webhook内容异常'
 
 
     webhook_param={"transaction_fee":transaction_fee,"channel_type":channel_type,"bill_id":webhook_bill_id,
@@ -94,6 +94,9 @@ def webhook():
                 bill_param={"transaction_fee":bill_transaction_fee,"channel_type":bill_channel_type,"bill_id":bill_id,
                   "optional":bill_optional,"sub_channel_type":bill_sub_channel_type,"bill_fee":bill_bill_fee,
                   "discount":bill_discount,"coupon_id":bill_coupon_id}
+    else:
+        logger.info('/rest/bills接口查询结果为空')
+        return '/rest/bills接口查询结果为空'
 
     for key in bill_param:
         if key in webhook_param:
