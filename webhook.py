@@ -54,9 +54,10 @@ def webhook():
         message_detail = json_data['message_detail']
         optional = json_data['optional']
         sub_channel_type = json_data['sub_channel_type']
-        bill_fee = json_data['bill_fee']
-        discount = json_data['discount']
-        coupon_id = json_data['coupon_id']
+        if transaction_type=='PAY':
+            bill_fee = json_data['bill_fee']
+            discount = json_data['discount']
+            coupon_id = json_data['coupon_id']
     except Exception,e:
         logger.info(traceback.print_exc(e))
         return '获取webhook内容异常'
@@ -92,12 +93,18 @@ def webhook():
                 bill_transaction_fee = bill['total_fee']
                 bill_sub_channel_type = bill['sub_channel']
                 bill_optional = bill['optional']
-                bill_bill_fee = bill['bill_fee']
-                bill_discount = bill['discount']
-                bill_coupon_id = bill['coupon_id']
-                bill_param={"transaction_fee":bill_transaction_fee,"channel_type":bill_channel_type,"bill_id":bill_id,
-                  "optional":bill_optional,"sub_channel_type":bill_sub_channel_type,"bill_fee":bill_bill_fee,
-                  "discount":bill_discount,"coupon_id":bill_coupon_id}
+                if transaction_type=='PAY':
+                    bill_bill_fee = bill['bill_fee']
+                    bill_discount = bill['discount']
+                    bill_coupon_id = bill['coupon_id']
+                    bill_param = {"transaction_fee": bill_transaction_fee, "channel_type": bill_channel_type,
+                                  "bill_id": bill_id,
+                                  "optional": bill_optional, "sub_channel_type": bill_sub_channel_type,
+                                  "bill_fee": bill_bill_fee,
+                                  "discount": bill_discount, "coupon_id": bill_coupon_id}
+                else:
+                    bill_param={"transaction_fee":bill_transaction_fee,"channel_type":bill_channel_type,"bill_id":bill_id,
+                      "optional":bill_optional,"sub_channel_type":bill_sub_channel_type}
     else:
         logger.info('/rest/bills接口查询结果为空')
         return '/rest/bills接口查询结果为空'
