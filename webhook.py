@@ -35,8 +35,8 @@ def query_refund(query_param):
         return 0
 
 
-def create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt):
-    insert_sql="INSERT INTO webhook_results(bill_no,bill_id,webhook_result,ip,createdAt) VALUES ('%s','%s','%s','%s','%s')"%(transaction_id,bill_id,result_msg,ip,createdAt)
+def create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type):
+    insert_sql="INSERT INTO webhook_results(bill_no,bill_id,webhook_result,ip,createdAt,refund_no,transaction_type) VALUES ('%s','%s','%s','%s','%s','%s','%s')"%(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type)
     return insert_sql
 
 
@@ -53,9 +53,9 @@ def webhook():
     Is_bill_id_match=0
     tt = int(time.time())*1000
     ip = request.remote_addr
-    result_msg = ''
+    refund_no=''
     createdAt = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-
+    #从webhook里拿信息
     try:
         json_data = request.get_json()
         logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
@@ -85,7 +85,7 @@ def webhook():
     except Exception,e:
         logger.info(traceback.print_exc(e))
         return '获取webhook内容异常'
-
+    #根据app_id查询app_secret并生成sign
     if app_id != None:
         resp_dict = get_app(app_id)
         app_master_secret = resp_dict['master_secret']
@@ -109,7 +109,8 @@ def webhook():
         bill_query_param["refund_no"] = transaction_id
         query_transaction_resp = query_refund(bill_query_param)
 
-    if query_transaction_resp!=0:
+    #从bills/refunds查询取内容
+    if query_transaction_resp!=0 and query_transaction_resp!=[]:
         for transaction in query_transaction_resp:
             bill_id=transaction['id']#支付订单或者退款订单的id
             if bill_id == webhook_bill_id:#由于存在订单号重复的可能性，故只取id一样的订单做比较
@@ -129,6 +130,8 @@ def webhook():
                                   "discount": bill_discount, "coupon_id": bill_coupon_id}
                 else:
                     bill_transaction_fee = transaction['refund_fee']
+                    refund_no = transaction_id
+                    transaction_id = transaction['bill_no']
                     bill_param={"transaction_fee":bill_transaction_fee,"channel_type":bill_channel_type,"bill_id":bill_id,
                       "optional":bill_optional,"sub_channel_type":bill_sub_channel_type}
         if Is_bill_id_match == 1:
@@ -152,7 +155,7 @@ def webhook():
                 else:
                     result_msg = key + ' not match'
                     logger.info(transaction_id + ':' + result_msg)
-                    modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt))
+                    modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type))
                     return transaction_id + ':' + result_msg
             else:
                 if bill_param[key]==webhook_param[key]:
@@ -160,12 +163,12 @@ def webhook():
                 else:
                     result_msg = key+' not match'
                     logger.info(transaction_id + ':' + result_msg)
-                    modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt))
+                    modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type))
                     return transaction_id+':'+result_msg
         else:
             result_msg = key + ' not in webhook'
             logger.info(transaction_id + ':' + result_msg)
-            modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt))
+            modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type))
             return transaction_id+':'+result_msg
 
     if str(ip) == '123.57.146.46' or str(ip) == '182.92.114.175' or str(
@@ -174,12 +177,12 @@ def webhook():
         if bc_sign == signature:
             logger.info('%s webhook success' % transaction_id)
             result_msg = "success"
-            modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt))
+            modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type))
             return result_msg
         else:
             logger.info("%s signature not match" % transaction_id)
             result_msg = "signature not match"
-            modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt))
+            modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type))
             return result_msg
     else:
         result_msg = 'ip is not from beecloud,ip is:' + ip
@@ -188,7 +191,7 @@ def webhook():
         print ("bill_id:%s"%bill_id)
         print ("result_msg:%s"%result_msg)
         # print ('insert_sql:%s'%insert_sql)
-        modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt))
+        modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_no,transaction_type))
         return result_msg
 
 #
