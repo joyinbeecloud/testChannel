@@ -8,16 +8,7 @@ import time
 
 channelTable_view = Blueprint('channelTable', __name__)
 
-def query_data():
-    db_resp = connect_db()
-    db=db_resp['db']
-    cursor = db_resp['cursor']
-    query_sql="select * from channelsInfo"
-    cursor.execute(query_sql)
-    channels = cursor.fetchall()
-    db.commit()
-    db.close()
-    return channels
+
 
 
 def change_str_to_Bool(v):
@@ -30,7 +21,8 @@ def change_str_to_Bool(v):
 def table_show():
     table_content = []
     table_dict = {}
-    channels = query_data()
+    query_sql = "select * from channelsInfo"
+    channels = query_data(query_sql)
     # for channel in channels:
     #     print channel
     for channel in channels:

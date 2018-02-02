@@ -139,6 +139,16 @@ def modify_data(modify_sql):
         print("modify_db_fail")
         return 0
 
+def query_data(query_sql):
+    db_resp = connect_db()
+    db = db_resp['db']
+    cursor = db_resp['cursor']
+    # query_sql = "select * from "+table
+    cursor.execute(query_sql)
+    channels = cursor.fetchall()
+    db.commit()
+    db.close()
+    return channels
 
 # apps=get_app('afae2a33-c9cb-4139-88c9-af5c1df472e1')
 # print apps
