@@ -148,3 +148,10 @@ def modify_data(modify_sql):
 #         print json_map['www']
 # except Exception,e:
 #     print repr(e)
+
+# optional={"aa":{"bb":"EXCEPTION"}}
+# optional1={"aa":{"bb":"EXCEPTION"}}
+# if optional==optional1:
+#     print 'match'
+# else:
+#     print 'not match'

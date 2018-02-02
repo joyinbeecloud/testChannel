@@ -13,16 +13,20 @@ def query_bill(query_param):
     query_param_str = json.dumps(query_param)
     en_param = urllib.quote_plus(query_param_str.encode('utf-8'))
     url_temp = 'https://api.beecloud.cn/2/rest/bills?para=' + en_param
+    # print("/rest/bills接口请求参数%s"%query_param_str)
     query_bill_resp = requests.get(url_temp).json()
     if 'bills' in query_bill_resp:
+        # print ('/rest/bills接口响应内容%r'%query_bill_resp['bills'])
         return query_bill_resp['bills']
     else:
+        # print ('/rest/bills接口响应内容%r'%query_bill_resp)
         return 0
 
 
 
 @webhook_view.route('/verify',methods=['POST'])
 def webhook():
+
     bill_query_param={}
     webhook_param = {}
     bill_param = {}
@@ -36,26 +40,26 @@ def webhook():
     bill_no=''
     createdAt = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
 
-    # try:
-    json_data = request.get_json()
-    logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
-    bc_sign = json_data['signature']
-    app_id = json_data['app_id']
-    bill_no = json_data['transaction_id']
-    transaction_fee = json_data['transaction_fee']
-    transaction_type = json_data['transaction_type']
-    channel_type = json_data['channel_type']
-    webhook_bill_id = json_data['id']
-    trade_success = json_data['trade_success']
-    message_detail = json_data['message_detail']
-    optional = json_data['optional']
-    sub_channel_type = json_data['sub_channel_type']
-    bill_fee = json_data['bill_fee']
-    discount = json_data['discount']
-    coupon_id = json_data['coupon_id']
-    # except Exception,e:
-    #     logger.info(traceback.print_exc(e))
-    #     return '获取webhook内容异常'
+    try:
+        json_data = request.get_json()
+        logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
+        bc_sign = json_data['signature']
+        app_id = json_data['app_id']
+        bill_no = json_data['transaction_id']
+        transaction_fee = json_data['transaction_fee']
+        transaction_type = json_data['transaction_type']
+        channel_type = json_data['channel_type']
+        webhook_bill_id = json_data['id']
+        trade_success = json_data['trade_success']
+        message_detail = json_data['message_detail']
+        optional = json_data['optional']
+        sub_channel_type = json_data['sub_channel_type']
+        bill_fee = json_data['bill_fee']
+        discount = json_data['discount']
+        coupon_id = json_data['coupon_id']
+    except Exception,e:
+        logger.info(traceback.print_exc(e))
+        return '获取webhook内容异常'
 
 
     webhook_param={"transaction_fee":transaction_fee,"channel_type":channel_type,"bill_id":webhook_bill_id,
@@ -75,7 +79,7 @@ def webhook():
         return "app_id is None"
 
     bill_query_param["app_id"]=app_id
-    bill_query_param["sign"] = sign
+    bill_query_param["app_sign"] = sign
     bill_query_param["timestamp"] = tt
     bill_query_param["bill_no"] = bill_no
     query_bill_resp = query_bill(bill_query_param)
@@ -83,7 +87,7 @@ def webhook():
         for bill in query_bill_resp:
             bill_id=bill['id']
             if bill_id == webhook_bill_id:
-                bill_id = bill['bill_id']
+                # bill_id = bill['id']
                 bill_channel_type = bill['channel']
                 bill_transaction_fee = bill['total_fee']
                 bill_sub_channel_type = bill['sub_channel']
@@ -100,15 +104,26 @@ def webhook():
 
     for key in bill_param:
         if key in webhook_param:
-            if bill_param[key]==webhook_param[key]:
-                pass
+            if key=='optional':
+                bill_optional1=json.loads(bill_param[key])
+                IS_optional_match = cmp(bill_optional1,webhook_param[key])
+                if IS_optional_match==0:
+                    pass
+                else:
+                    result_msg = key + ' not match'
+                    logger.info(bill_no + ':' + result_msg)
+                    modify_data(insert_sql)
+                    return bill_no + ':' + result_msg
             else:
-                result_msg = key+'not match'
-                logger.info(bill_no + ':' + result_msg)
-                modify_data(insert_sql)
-                return bill_no+':'+result_msg
+                if bill_param[key]==webhook_param[key]:
+                    pass
+                else:
+                    result_msg = key+' not match'
+                    logger.info(bill_no + ':' + result_msg)
+                    modify_data(insert_sql)
+                    return bill_no+':'+result_msg
         else:
-            result_msg = key + 'not in webhook'
+            result_msg = key + ' not in webhook'
             logger.info(bill_no + ':' + result_msg)
             modify_data(insert_sql)
             return bill_no+':'+result_msg

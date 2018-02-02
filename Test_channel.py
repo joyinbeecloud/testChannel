@@ -476,8 +476,9 @@ def SFConfirm():
 @app.route('/webhook',methods=['POST'])
 def webhook():
     ip = request.remote_addr
-    # print 'webhook from:' + ip
+    print 'webhook from:' + ip
     json_data = request.get_json()
+    print json_data
     logger.info('recieve webhook:%s' % json.dumps(json_data, encoding='utf-8', ensure_ascii=False))
     if str(ip) =='123.57.146.46' or str(ip) == '182.92.114.175' or str(ip) == '123.57.81.91':
         # 第一步：验证数字签名
