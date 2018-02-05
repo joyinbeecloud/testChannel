@@ -41,7 +41,7 @@ def create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,bill_no,tra
 
 def is_transaction_exist(transaction_id):
     query_sql="select * from webhook_results WHERE transaction_no='%s'"%transaction_id
-    print query_sql
+    # print query_sql
     db_webhook=query_data(query_sql)
     if db_webhook == ():
         is_bill_exist=False
@@ -81,12 +81,15 @@ def webhook():
         bc_sign = json_data['signature']
         app_id = json_data['app_id']
         transaction_id = json_data['transaction_id']
+        transactionId=json_data['transactionId']
         transaction_fee = json_data['transaction_fee']
+        transactionFee = json_data['transactionFee']
         transaction_type = json_data['transaction_type']
         channel_type = json_data['channel_type']
         webhook_bill_id = json_data['id']
         trade_success = json_data['trade_success']
         message_detail = json_data['message_detail']
+        messageDetail = json_data['messageDetail']
         optional = json_data['optional']
         sub_channel_type = json_data['sub_channel_type']
         if transaction_type=='PAY':
@@ -105,8 +108,19 @@ def webhook():
         logger.info(traceback.print_exc(e))
         return '获取webhook内容异常'
     if trade_success!=True:
-        logger.info(transaction_id+':trade_success is not true'+trade_success)
-        return 'trade_success is not true'+trade_success
+        logger.info(transaction_id+':trade_success is not true.trade_sucess is '+trade_success)
+        return 'trade_success is not true.trade_sucess is '+trade_success
+    aa={}
+    if type(message_detail)!=type(aa):
+        logger.info(transaction_id+':message_detail is not a dict,message_detail is %r' %message_detail)
+        return transaction_id+':message_detail is not a dict'
+    if cmp(message_detail,messageDetail)!=0:
+        logger.info(transaction_id + ':message_detail is not match messageDetail%r' % message_detail)
+        return transaction_id + ':message_detail is not match messageDetail'
+    if transaction_id!=transactionId or transaction_fee!=transactionFee:
+        logger.info(transaction_id +':transaction_id or transaction_fee not match')
+        return transaction_id +':transaction_id or transaction_fee not match'
+
     #根据app_id查询app_secret并生成sign
     if app_id != None:
         resp_dict = get_app(app_id)
@@ -197,7 +211,7 @@ def webhook():
             if is_transaction_exist(transaction_id) == False:
                 modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_bill_no,transaction_type))
             return transaction_id+':'+result_msg
-
+    #判断ip是否正常，signature是否正常
     if str(ip) == '123.57.146.46' or str(ip) == '182.92.114.175' or str(
             ip) == '123.57.81.91':
         # 判断两个sign是否一致
