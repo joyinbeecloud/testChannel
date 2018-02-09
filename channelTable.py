@@ -36,7 +36,7 @@ def table_show():
                       'note': channel[15],
                        }
         table_content.append(table_dict)
-    print table_content
+    # print table_content
     return render_template('channelTable.html', table=table_content)
 
 @channelTable_view.route('/modify_channels_Info')
@@ -49,7 +49,7 @@ def save_channels_info():
     developer=request.args.get('developer')
     isBill=change_str_to_Bool(request.args.get('isBill'))
     isLive=change_str_to_Bool(request.args.get('isLive'))
-    print isLive
+    # print isLive
     isRefund=change_str_to_Bool(request.args.get('isRefund'))
     isTransfer=change_str_to_Bool(request.args.get('isTransfer'))
     isVerify=change_str_to_Bool(request.args.get('isVerify'))
@@ -79,7 +79,7 @@ def create_channel():
     developer = request.args.get('developer')
     isBill = change_str_to_Bool(request.args.get('isBill'))
     isLive = change_str_to_Bool(request.args.get('isLive'))
-    print isLive
+    # print isLive
     isRefund = change_str_to_Bool(request.args.get('isRefund'))
     isTransfer = change_str_to_Bool(request.args.get('isTransfer'))
     isVerify = change_str_to_Bool(request.args.get('isVerify'))
@@ -118,7 +118,6 @@ def query_channels():
         query_sql = "select * from channelsInfo where channelSourceName like '%%%%%s%%%%'"%channel_name
     else:
         query_sql = "select * from (select * from channelsInfo where channel='%s')aa where channelSourceName like '%%%%%s%%%%' or note LIKE '%%%%%s%%%%'"%(sub_channel,channel_name,channel_name)
-    print query_sql
     channels = query_data(query_sql)
     # for channel in channels:
     #     print channel
@@ -133,5 +132,5 @@ def query_channels():
                       'note': channel[15],
                       }
         table_content.append(table_dict)
-    print str(table_content)
+    # print str(table_content)
     return json.dumps({"table_content":table_content})
