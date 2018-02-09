@@ -24,13 +24,12 @@
 
   <body>
     <a href="/logout" style="position:absolute; right:30px; top:15px;">退出</a>
+
     <section class="wrapper">
           	<!--<h3><i class="fa fa-angle-right"></i> Responsive Table Examples</h3>-->
 		  		<div class="row mt">
 			  		<div class="col-lg-12">
                       <div class="content-panel">
-                      <h4><i class="fa fa-angle-right"></i> 各渠道开发和使用情况 </h4>
-                      <button id="add_channel" name="add_channel">➕新增渠道</button>
                           <div id="add_channel_page" style="" class="all_pop_page">
                               <span id ="back" class="chacha">返回</span><br><br>
                               <table id = "add_channel_table" class="aaa"><tr>
@@ -52,6 +51,34 @@
                                   </table>
                               <button id="save_new_channel" name="save_new_channel" >保存</button>
                           </div>
+                          <span style="text-align: center"><h2>各渠道开发和使用情况</h2></span>
+                          <span style="margin-left: 20px;margin-right: 10px; font-size: 16px;">渠道筛选</span>
+                          <select id="channel_select" name="channel_select" style="margin-right: 20px;">
+                            <option value="" selected>所有渠道</option>
+                            <option value="BC_EXPRESS">BC_EXPRESS</option>
+                            <option value="BC_GATEWAY">BC_GATEWAY</option>
+                            <option value="BC_NATIVE">BC_NATIVE</option>
+                            <option value="BC_WX_JSAPI">BC_WX_JSAPI</option>
+                            <option value="BC_WX_WAP">BC_WX_WAP</option>
+                            <option value="BC_WX_APP">BC_WX_APP</option>
+                            <option value="BC_WX_MINI">BC_WX_MINI</option>
+                            <option value="BC_WX_SCAN">BC_WX_SCAN</option>
+                            <option value="BC_ALI_QRCODE">BC_ALI_QRCODE</option>
+                            <option value="BC_ALI_WEB">BC_ALI_WEB</option>
+                            <option value="BC_ALI_WAP">BC_ALI_WAP</option>
+                            <option value="BC_ALI_QRCODE">BC_ALI_QRCODE</option>
+                            <option value="BC_ALI_APP">BC_ALI_APP</option>
+                            <option value="BC_ALI_JSAPI">BC_ALI_JSAPI</option>
+                            <option value="BC_ALI_SCAN">BC_ALI_SCAN</option>
+                            <option value="BC_QQ_NATIVE">BC_QQ_NATIVE</option>
+                            <option value="BC_JD_QRCODE">BC_JD_QRCODE</option>
+                            <option value="BC_TRANSFER">BC_TRANSFER</option>
+                            <option value="auth">AUTH</option>
+                            <option value="BC_CARD_CHARGE">BC_CARD_CHARGE</option>
+                            </select>
+                          <span style="margin-left: 20px;margin-right:10px; font-size: 16px;">结算方名称</span>
+                          <input id="channel_name" name="channel_name" placeholder="查询结算方名称" style=" margin-right: 20px;"/>
+                          <button id="search" class="btn btn-facebook" style="margin-left: 20px;">查询</button>
                           <section id="table_show" name="table_show">
                           </section>
                   </div><!-- /content-panel -->
@@ -69,8 +96,12 @@
 
     <script>
         var table_content={{ table|tojson|safe}};
-        console.log(table_content);
-        var table_html='<table id="table" class="aaa bbb input_style" >' +
+        //console.log(table_content);
+        create_table_html(table_content);
+
+        function create_table_html(table_content) {
+            var table_html='<table id="table" class="aaa bbb input_style" >' +
+                        '<button id="add_channel" name="add_channel" style="float: right;font-size:16px;" class="btn btn-danger">➕新增渠道</button></caption>' +
                         '<tr><th>渠道</th>'+
                                 '<th>渠道结算来源</th>'+
                                 '<th>渠道编号</th>'+
@@ -89,109 +120,171 @@
         for(var i=0; i<table_content.length; i++){
             var table=table_content[i];
             //console.log(table);
+
             if(i%2!=1){
                 table_html +='<tr class="blue_bg" id="tr'+i+'">'//设置行的背景色
-            }
+                }
             else {
                 table_html +='<tr>'
-            }
+                }
             table_html += '<td><input name="channel" value=' + table["channel"] +'></input>'+
                     '<input name="id" style="display: none;" value = '+table["id"]+'></input></td>'+
-                    '<td><input name="channelSourceName" value='+table["channelSourceName"]+'></td>'+
+                    '<td width="50px"><input name="channelSourceName" value='+table["channelSourceName"]+'></td>'+
                     '<td width="10px"><input name="channelSourceNumber" value='+dealNote(table["channelSourceNumber"])+'></td>'+
                     '<td>'+select_V("isBill",table["isBill"])+'</td><td>'+select_V("isRefund",table["isRefund"])+'</td>'+
                     '<td>'+select_V("isTransfer",table["isTransfer"])+'</td><td>'+select_V("isVerify",table["isVerify"])+'</td>'+
                     '<td>'+select_V("jsbutton",table["jsbutton"])+'</td><td><input name="developer" style="width:45px;" value='+
                     table["developer"]+'></td><td>'+ select_V("isLive",table["isLive"])+'</td><td><textarea name="cost" cols="17" disabled="true">'+
                     dealNote(table["cost"])+'</textarea></td><td width="150px"><textarea name="note" cols="20" disabled="true">'+ dealNote(table["note"])+
-                    '</textarea></td><td width="60px"><span class="edit">编辑</sapn></td><td><span class="save" style="margin-left:10px">保存</span>'+
+                    '</textarea></td><td ><span class="edit">编辑</span></td><td><span class="save">保存</span>'+
                     '</td></tr>';
 
+            }
+            table_html += '</table>';
+
+            $('#table_show').html(table_html);
+
+            $('#table_show').find('input').attr("readonly","true");
+
+            <!--由于动态生成的html不能直接用click事件，一定要用一个不是动态生成的去找 这里是用class去找-->
+            $('#table_show').on("click","#table .edit",function () {
+                $(this).parents('table').find('input').attr("readonly",true);
+                $(this).parents('table').find('select,textarea').attr("disabled",true);
+                $(this).parents('table').find('input,select,textarea').removeClass("editcss");
+                console.log($(this).parents('table').find('input'));
+                //console.log($(this).parents('.blue_bg').find('select'));
+                $(this).parents('tr').find('input,select,textarea').addClass("editcss");
+                $(this).parents('tr').find('input').prop("readonly",false);
+                $(this).parents('tr').find('select,textarea').prop("disabled",false);
+            });
+
+            $('#datetimepicker').datetimepicker({
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0
+            });
+            $('#table_show').on("click","#table .save",function () {
+                //console.log($(this).parents('tr').find('input').attr("class"));
+                //根据id找和根据父元素找不一样的处理
+                var input_list = $(this).parents('tr').find('input,select,textarea');
+                var para_json={};
+                for(var input=0; input<input_list.length; input++){
+                        para_json[input_list[input].name]=input_list[input].value;
+                    }
+                console.log(para_json);
+                $.ajax({
+                    type: "get",
+                    url: "/channelTable/modify_channels_Info",
+                    data:para_json,//ajax向接口传参数
+                    dataType: "json",
+                    success: function(resp){
+                        console.log(resp);
+                        alert(resp['msg']);
+                        location.reload();
+                    }
+                })
+            });
+            $('#save_new_channel').click(function () {
+                console.log($('#datetimepicker').val());
+                //console.log($(this).parents('tr').find('input').attr("class"));
+                var save_channel_inputs = $("#add_channel_page").find("input,select,textarea");
+                var save_channel_json={};
+                for(var input=0; input<save_channel_inputs.length; input++){
+                        save_channel_json[save_channel_inputs[input].name]=save_channel_inputs[input].value;
+                    }
+                console.log(save_channel_json);
+                //console.log('select_val:'+select_val);
+                $.ajax({
+                    type: "get",
+                    url: "/channelTable/create_channel",
+                    data:save_channel_json,//ajax向接口传参数
+                    dataType: "json",
+                    success: function(resp){
+                        console.log(resp);
+                        alert(resp['msg']);
+                        location.reload();
+                    }
+                })
+            });
+
+
+            $('#add_channel').click(function () {
+                $('#add_channel_page').css({'display':'block'});
+            });
+
+            $('#back').click(function(){
+                $('#add_channel_page').css({'display':'none'});
+            });
+
+
+            function dealNote(v) {
+                return !v ? "":v;
+            }
+            function select_V(cl,v){
+                return '<select name="'+cl+'"disabled="true"><option value="true" ' + (!!v ? "selected" : "") + '>✅</option><option value="false"  ' + (!v ? "selected" : "") + '>✘</option></select>';
+            }
+
+
+
         }
-        table_html += '</table>';
-        $('#table_show').html(table_html);
-        $('#table_show').find('input').attr("readonly","true");
 
-        <!--由于动态生成的html不能直接用click事件，一定要用一个不是动态生成的去找 这里是用class去找-->
-        $('#table_show').on("click","#table .edit",function () {
-            $(this).parents('table').find('input').attr("readonly",true);
-            $(this).parents('table').find('select,textarea').attr("disabled",true);
-            $(this).parents('table').find('input,select,textarea').removeClass("editcss");
-            console.log($(this).parents('table').find('input'));
-            //console.log($(this).parents('.blue_bg').find('select'));
-            $(this).parents('tr').find('input,select,textarea').addClass("editcss");
-            $(this).parents('tr').find('input').prop("readonly",false);
-            $(this).parents('tr').find('select,textarea').prop("disabled",false);
-        });
-
-        $('#datetimepicker').datetimepicker({
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		minView: 2,
-		forceParse: 0
-        });
-        $('#table_show').on("click","#table .save",function () {
-            //console.log($(this).parents('tr').find('input').attr("class"));
-            //根据id找和根据父元素找不一样的处理
-            var input_list = $(this).parents('tr').find('input,select,textarea');
-            var para_json={};
-            for(var input=0; input<input_list.length; input++){
-                    para_json[input_list[input].name]=input_list[input].value;
-                }
-            console.log(para_json);
+        $('#channel_select').change(function(){
+            var aa= $('#channel_select').val();
+            var query_channel={'sub_channel':aa,'condition':'sub_channel'};
+            console.log(query_channel);
             $.ajax({
                 type: "get",
-                url: "/channelTable/modify_channels_Info",
-                data:para_json,//ajax向接口传参数
+                url: "/channelTable/query_channels",
+                data: query_channel,//ajax向接口传参数
                 dataType: "json",
                 success: function(resp){
-                    console.log(resp);
-                    alert(resp['msg']);
-                    location.reload();
+                   // resp_json=json.parse(resp)
+                    table_content=resp['table_content'];
+                    console.log(table_content);
+                    //alert(table_content)
+                    create_table_html(table_content);
+                },
+                error:function(xhr,textStatus){
+                    console.log('错误');
+                    console.log(xhr);
+                    console.log(textStatus);
+                },
+                complete:function(){
+                    console.log('over');
                 }
-            })
+            });
+
         });
-        $('#save_new_channel').click(function () {
-            console.log($('#datetimepicker').val());
-            //console.log($(this).parents('tr').find('input').attr("class"));
-            var save_channel_inputs = $("#add_channel_page").find("input,select,textarea");
-            var save_channel_json={};
-            for(var input=0; input<save_channel_inputs.length; input++){
-                    save_channel_json[save_channel_inputs[input].name]=save_channel_inputs[input].value;
-                }
-            console.log(save_channel_json);
-            //console.log('select_val:'+select_val);
+        $('#search').click(function(){
+            var channel_name=$('#channel_name').val();
+            var sub_channel= $('#channel_select').val();
+            var query_condition={"channel_name":channel_name,"condition":"channel_name","sub_channel":sub_channel};
             $.ajax({
                 type: "get",
-                url: "/channelTable/create_channel",
-                data:save_channel_json,//ajax向接口传参数
+                url: "/channelTable/query_channels",
+                data: query_condition,//ajax向接口传参数
                 dataType: "json",
                 success: function(resp){
-                    console.log(resp);
-                    alert(resp['msg']);
-                    location.reload();
+                   // resp_json=json.parse(resp)
+                    table_content=resp['table_content'];
+                    console.log(table_content);
+                    //alert(table_content)
+                    create_table_html(table_content);
+                },
+                error:function(xhr,textStatus){
+                    console.log('错误');
+                    console.log(xhr);
+                    console.log(textStatus);
+                },
+                complete:function(){
+                    console.log('over');
                 }
-            })
-        });
-
-
-
-        $('#add_channel').click(function () {
-            $('#add_channel_page').css({'display':'block'});
-        });
-
-        $('#back').click(function(){
-            $('#add_channel_page').css({'display':'none'});
-        });
-        function dealNote(v) {
-            return !v ? "":v;
-        }
-        function select_V(cl,v){
-            return '<select name="'+cl+'"disabled="true"><option value="true" ' + (!!v ? "selected" : "") + '>✅</option><option value="false"  ' + (!v ? "selected" : "") + '>✘</option></select>';
-        }
+            });
+        })
 
 
     </script>

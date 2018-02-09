@@ -99,4 +99,46 @@ def create_channel():
     # return 1
     return json.dumps(resp)
 
+@channelTable_view.route('/query_channels')
+def query_channels():
+    sub_channel = request.args.get('sub_channel')
+    channel_name = request.args.get('channel_name')
+    if channel_name==None:
+        channel_name=""
+    if sub_channel==None:
+        sub_channel=""
+    condition = request.args.get('condition')
+    table_content=[]
+    print "sub_channel:"+sub_channel
+    print "channel_name:" + channel_name
+    # channel = query_channel['sub_channel']
 
+    if sub_channel=="" and channel_name=="":
+        query_sql = "select * from channelsInfo"
+    elif channel_name=="" and sub_channel!="":
+        query_sql = "select * from channelsInfo where channel='%s'"%sub_channel
+    elif channel_name!="" and sub_channel=="":
+        query_sql = "select * from channelsInfo where channelSourceName like '%%%%%s%%%%'"%channel_name
+    else:
+        query_sql = "select * from (select * from channelsInfo where channel='%s')aa where channelSourceName like '%%%%%s%%%%' or note LIKE '%%%%%s%%%%'"%(sub_channel,channel_name,channel_name)
+    print query_sql
+    channels = query_data(query_sql)
+    # for channel in channels:
+    #     print channel
+    for channel in channels:
+        table_dict = {'isBill': channel[0], 'id': channel[2],
+                      'channel': channel[4], 'isTransfer': channel[5],
+                      'channelSourceNumber': channel[6],
+                      'channelSourceName': channel[7], 'developer': channel[8],
+                      'isLive': channel[9], 'limit_amount': channel[10],
+                      'jsbutton': channel[11], 'isVerify': channel[12],
+                      'cost': channel[13], 'isRefund': channel[14],
+                      'note': channel[15],
+                      }
+        table_content.append(table_dict)
+    print str(table_content)
+    return json.dumps({"table_content":table_content})
+
+query_sql ="select * from (select * from channelsInfo where channel='BC_NATIVE')aa where channelSourceName like '%%平安%%' or note LIKE '%%平安%%'"
+channels = query_data(query_sql)
+print channels
