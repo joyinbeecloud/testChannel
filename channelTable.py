@@ -109,9 +109,6 @@ def query_channels():
         sub_channel=""
     condition = request.args.get('condition')
     table_content=[]
-    print "sub_channel:"+sub_channel
-    print "channel_name:" + channel_name
-    # channel = query_channel['sub_channel']
 
     if sub_channel=="" and channel_name=="":
         query_sql = "select * from channelsInfo"
@@ -138,7 +135,3 @@ def query_channels():
         table_content.append(table_dict)
     print str(table_content)
     return json.dumps({"table_content":table_content})
-
-query_sql ="select * from (select * from channelsInfo where channel='BC_NATIVE')aa where channelSourceName like '%%平安%%' or note LIKE '%%平安%%'"
-channels = query_data(query_sql)
-print channels
