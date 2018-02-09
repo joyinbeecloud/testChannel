@@ -4,12 +4,11 @@ from flask import Flask, request, redirect, render_template,Markup
 import json
 from common_func import *
 from datetime import datetime,date
+from flask_login import login_required
 import time
 
+
 channelTable_view = Blueprint('channelTable', __name__)
-
-
-
 
 def change_str_to_Bool(v):
     if v=="true":
@@ -18,6 +17,7 @@ def change_str_to_Bool(v):
         return 0
 
 @channelTable_view.route('')
+@login_required
 def table_show():
     table_content = []
     table_dict = {}

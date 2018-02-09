@@ -5,12 +5,13 @@ from common_func import *
 import requests
 import uuid
 import json
-from flask import Flask, request, redirect, render_template,Markup
+from flask import Flask, request, redirect, render_template,Markup,url_for,g,sessions,session
 from haohuihua import haohuihua_view
 from button import jsbutton_view
 from channelTable import channelTable_view
 from webhook import webhook_view
 import webbrowser
+from flask_login import (LoginManager,login_required,login_user,logout_user,UserMixin,current_user)
 
 
 app=Flask(__name__)
@@ -22,6 +23,16 @@ app.register_blueprint(jsbutton_view, url_prefix='/jsbutton')
 app.register_blueprint(channelTable_view, url_prefix='/channelTable')
 app.register_blueprint(webhook_view,url_prefix='/webhook')
 logger = log()
+
+app.secret_key = 's3cr3t'
+login_manager = LoginManager()
+login_manager.session_protection = 'strong' #设置为strong的时候需要在登陆时候设置session.permanent = True.也可以选择设置为basic
+login_manager.login_view = 'login'
+login_manager.init_app(app)
+login_manager.login_message = u"请登录！"
+login_manager.login_message_category = "info"
+
+
 hosts={
     'api':'https://api.beecloud.cn/2',
     '82.71':'http://123.56.82.71:8080/2',
@@ -40,8 +51,64 @@ hosts={
     '191.185':'http://182.92.191.185:8080/2',
     'apitest185':'https://apitest185.beecloud.cn/2'
     }
+users=[{'username':'beecloud','password':'beecloud617','user_id':'1qaz'},{'username':'bee','password':'bee','user_id':'2wsx'}]
+
+class User(UserMixin):
+    pass
+def query_user(username):
+    for user in users:
+        if user['username']==username:
+            return user
+    return None
+@login_manager.user_loader
+def load_user(username):
+    # return User.get(username)
+    ##原来的代码
+    if query_user(username) is not None:
+        curr_user = User()
+        curr_user.id=username
+        return curr_user
+@app.before_request
+def before_request():
+    g.user=current_user
 
 
+
+
+@app.route('/login',methods=['GET','POST'])
+def login():
+    if g.user.is_authenticated == True:
+        return redirect('/channelTable')
+    session.permanent = True
+    if request.method == 'POST':
+        # session['username']=request.form['username']
+        # session['password']=request.form['password']
+        username = request.form['username']
+        password = request.form['password']
+
+        user=query_user(username)
+        if user == None:
+            return render_template('login.html',error=u'用户名不存在')
+        if str(password) == user['password']:
+
+            curr_user = User()
+            curr_user.id = username
+            login_user(curr_user)
+            print("auth:%r"%current_user.is_authenticated)
+            return redirect('/channelTable')
+        else:
+            return render_template('login.html',error=u'密码错误')
+
+    return render_template('login.html')
+@app.route('/logout',methods=['GET','POST'])
+@login_required
+def logout():
+    print(current_user.id)
+    logout_user()
+    # session.pop('username',None)
+    # session.pop('password',None)
+
+    return redirect('/login')
 
 @app.route('/')
 def hello_index():

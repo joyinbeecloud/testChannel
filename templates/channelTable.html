@@ -100,7 +100,9 @@
         create_table_html(table_content);
 
         function create_table_html(table_content) {
-            var table_html='<table id="table" class="aaa bbb input_style" >' +
+            $('#table_show').html("");
+            var table_html = '';
+            table_html='<table id="table" class="aaa bbb input_style" >' +
                         '<button id="add_channel" name="add_channel" style="float: right;font-size:16px;" class="btn btn-danger">➕新增渠道</button></caption>' +
                         '<tr><th>渠道</th>'+
                                 '<th>渠道结算来源</th>'+
@@ -167,7 +169,34 @@
             minView: 2,
             forceParse: 0
             });
+            //保存编辑的内容
+            $('.save').click(function () {
+                $(this).parents('table').find('input').attr("readonly",true);
+                $(this).parents('table').find('select,textarea').attr("disabled",true);
+                $(this).parents('table').find('input,select,textarea').removeClass("editcss");
+
+                var input_list = $(this).parents('tr').find('input,select,textarea');
+                var para_json={};
+                for(var input=0; input<input_list.length; input++){
+                        para_json[input_list[input].name]=input_list[input].value;
+                    }
+                console.log(para_json);
+                $.ajax({
+                    type: "get",
+                    url: "/channelTable/modify_channels_Info",
+                    data:para_json,//ajax向接口传参数
+                    dataType: "json",
+                    success: function(resp){
+                        console.log(resp);
+                        alert(resp['msg']);
+                        //location.reload();
+
+                    }
+                })
+            });
+            /*这个也是个找元素的方法
             $('#table_show').on("click","#table .save",function () {
+                //console.log($(this).html());
                 //console.log($(this).parents('tr').find('input').attr("class"));
                 //根据id找和根据父元素找不一样的处理
                 var input_list = $(this).parents('tr').find('input,select,textarea');
@@ -184,10 +213,10 @@
                     success: function(resp){
                         console.log(resp);
                         alert(resp['msg']);
-                        location.reload();
+                        //location.reload();
                     }
                 })
-            });
+            });*/
             $('#save_new_channel').click(function () {
                 console.log($('#datetimepicker').val());
                 //console.log($(this).parents('tr').find('input').attr("class"));
