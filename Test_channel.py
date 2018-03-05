@@ -5,7 +5,7 @@ from common_func import *
 import requests
 import uuid
 import json
-from flask import Flask, request, redirect, render_template,Markup,url_for,g,sessions,session
+from flask import Flask, request, redirect, render_template,Markup,g,session
 from haohuihua import haohuihua_view
 from button import jsbutton_view
 from channelTable import channelTable_view
@@ -244,7 +244,7 @@ def bill():
         'notify_url':notify_url,
         'bank':bank,
         'buyer_id':buyer_id,
-        # 'analysis':analysis,
+        'analysis':analysis,
         'store_id':store_id,
         'partition_id':partition_id
         }
