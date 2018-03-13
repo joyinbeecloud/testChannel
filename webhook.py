@@ -7,7 +7,9 @@ from datetime import datetime,date
 import MySQLdb,time,traceback
 
 webhook_view = Blueprint('webhook', __name__)
-logger=log()
+
+
+
 
 def query_bill(query_param):
     query_param_str = json.dumps(query_param)
@@ -230,9 +232,9 @@ def webhook():
     else:
         result_msg = 'ip is not from beecloud,ip is:' + ip
         logger.info(transaction_id + ':' + result_msg)
-        print ("transaction_id:%s"%transaction_id)
-        print ("bill_id:%s"%bill_id)
-        print ("result_msg:%s"%result_msg)
+        # print ("transaction_id:%s"%transaction_id)
+        # print ("bill_id:%s"%bill_id)
+        # print ("result_msg:%s"%result_msg)
         # print ('insert_sql:%s'%insert_sql)
         if is_transaction_exist(transaction_id) == False:
             modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_bill_no,transaction_type))

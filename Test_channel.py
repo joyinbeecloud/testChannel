@@ -22,7 +22,7 @@ app.register_blueprint(haohuihua_view, url_prefix='/user_info_3h')
 app.register_blueprint(jsbutton_view, url_prefix='/jsbutton')
 app.register_blueprint(channelTable_view, url_prefix='/channelTable')
 app.register_blueprint(webhook_view,url_prefix='/webhook')
-logger = log()
+
 
 app.secret_key = 's3cr3t'
 login_manager = LoginManager()

@@ -3,6 +3,22 @@ import requests,urllib,json,hashlib,time,logging
 import MySQLdb
 import traceback
 
+
+logger = logging.getLogger('Test_channel')
+logger.setLevel(logging.DEBUG)
+# 创建一个handler，用于写入日志文件
+fh = logging.FileHandler('/test201710311202.log')
+fh.setLevel(logging.DEBUG)
+# 再创建一个handler，用于输出到控制台
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+ch.setFormatter(formatter)
+fh.setFormatter(formatter)
+logger.addHandler(fh)
+logger.addHandler(ch)
+
+
 def get_app(app_id):
     tt = int(time.time()) * 1000
     sys_app_id = 'c37d661d-7e61-49ea-96a5-68c34e83db3a'
@@ -102,22 +118,8 @@ def attachAppSign(reqPara,bcapp):
     bcapp.app_id
 
 
-def log():
-    logger = logging.getLogger('Test_channel')
-    logger.setLevel(logging.DEBUG)
-    # 创建一个handler，用于写入日志文件
-    fh = logging.FileHandler('/test201710311202.log')
-    fh.setLevel(logging.DEBUG)
-    # 再创建一个handler，用于输出到控制台
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    ch.setFormatter(formatter)
-    fh.setFormatter(formatter)
-    logger.addHandler(fh)
-    logger.addHandler(ch)
-    return logger
+
 
 
 def connect_db():
