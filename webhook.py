@@ -64,7 +64,8 @@ def is_transaction_exist(transaction_id):
 
 @webhook_view.route('/verify',methods=['POST'])
 def webhook():
-
+    data=request.get_data()
+    logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
     bill_query_param={}
     webhook_param = {}
     bill_param = {}

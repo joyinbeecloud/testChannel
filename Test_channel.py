@@ -50,7 +50,12 @@ hosts={
     'apitest22':'https://apitest22.beecloud.cn/2',
     'api8271':'https://api8271.beecloud.cn/2',
     '191.185':'http://182.92.191.185:8080/2',
-    'apitest185':'https://apitest185.beecloud.cn/2'
+    'apitest185':'https://apitest185.beecloud.cn/2',
+    'apibj1':'http://123.57.71.81:8080/2',
+    'apibj2':'http://123.56.92.236:8080/2',
+    'apibj3':'http://101.200.126.108:8080/2',
+    'apibj4':'http://123.56.238.125:8080/2',
+
     }
 users=[{'username':'beecloud','password':'beecloud617','user_id':'1qaz'},{'username':'bee','password':'bee','user_id':'2wsx'}]
 
