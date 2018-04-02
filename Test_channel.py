@@ -35,7 +35,7 @@ login_manager.login_message_category = "info"
 
 hosts={
     'api':'https://api.beecloud.cn/2',
-    '82.71':'http://123.56.82.71:8080/cg2',
+    '82.71':'http://123.56.82.71:8080/2',
 
     '75.44':'http://121.40.75.44:8080/2',
     '40.236':'http://115.28.40.236:8080/2',

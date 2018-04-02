@@ -84,15 +84,15 @@ def webhook():
         bc_sign = json_data['signature']
         app_id = json_data['app_id']
         transaction_id = json_data['transaction_id']
-        transactionId=json_data['transactionId']
+        # transactionId=json_data['transactionId']
         transaction_fee = json_data['transaction_fee']
-        transactionFee = json_data['transactionFee']
+        # transactionFee = json_data['transactionFee']
         transaction_type = json_data['transaction_type']
         channel_type = json_data['channel_type']
         webhook_bill_id = json_data['id']
         trade_success = json_data['trade_success']
         message_detail = json_data['message_detail']
-        messageDetail = json_data['messageDetail']
+        # messageDetail = json_data['messageDetail']
         optional = json_data['optional']
         sub_channel_type = json_data['sub_channel_type']
         if transaction_type=='PAY':
@@ -117,12 +117,12 @@ def webhook():
     if type(message_detail)!=type(aa):
         logger.info(transaction_id+':message_detail is not a dict,message_detail is %r' %message_detail)
         return transaction_id+':message_detail is not a dict'
-    if cmp(message_detail,messageDetail)!=0:
-        logger.info(transaction_id + ':message_detail is not match messageDetail%r' % message_detail)
-        return transaction_id + ':message_detail is not match messageDetail'
-    if transaction_id!=transactionId or transaction_fee!=transactionFee:
-        logger.info(transaction_id +':transaction_id or transaction_fee not match')
-        return transaction_id +':transaction_id or transaction_fee not match'
+    # if cmp(message_detail,messageDetail)!=0:
+    #     logger.info(transaction_id + ':message_detail is not match messageDetail%r' % message_detail)
+    #     return transaction_id + ':message_detail is not match messageDetail'
+    # if transaction_id!=transactionId or transaction_fee!=transactionFee:
+    #     logger.info(transaction_id +':transaction_id or transaction_fee not match')
+    #     return transaction_id +':transaction_id or transaction_fee not match'
 
     #根据app_id查询app_secret并生成sign
     if app_id != None:
