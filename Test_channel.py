@@ -1,6 +1,5 @@
 # encoding: utf-8
 import time
-from logging import NullHandler
 from common_func import *
 import requests
 import uuid
