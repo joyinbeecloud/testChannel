@@ -10,6 +10,7 @@ from haohuihua import haohuihua_view
 from button import jsbutton_view
 from channelTable import channelTable_view
 from webhook import webhook_view
+from yyt_test import yyt_test_view
 import webbrowser
 from flask_login import (LoginManager,login_required,login_user,logout_user,UserMixin,current_user)
 
@@ -22,6 +23,7 @@ app.register_blueprint(haohuihua_view, url_prefix='/user_info_3h')
 app.register_blueprint(jsbutton_view, url_prefix='/jsbutton')
 app.register_blueprint(channelTable_view, url_prefix='/channelTable')
 app.register_blueprint(webhook_view,url_prefix='/webhook')
+app.register_blueprint(yyt_test_view,url_prefix='/yyt_test')
 
 
 app.secret_key = 's3cr3t'
@@ -385,6 +387,8 @@ def pay_bill():
     return resp
 
 
+
+
 def deal_with_pay(channel,resp,total_fee):
     resp_str=json.dumps(resp, encoding='utf-8', ensure_ascii=False)
     if channel == 'BC_WX_WAP' or channel == 'WX_WAP':
@@ -430,11 +434,11 @@ def deal_with_pay(channel,resp,total_fee):
             return render_template('show_url.html',result=resp_str,err_detail=resp['err_detail'],result_code=resp['result_code'])
     elif channel == 'BC_EXPRESS' or channel == 'UN_WEB' or channel == 'UN_WAP' or channel == 'BC_GATEWAY' or channel == 'JD_WEB' or channel =='JD_WAP':
         if resp['result_code'] == 0:
-            # if 'url' in resp.keys() and resp['url']!='':
+            if 'url' in resp.keys() and resp['url']!='':
             #     print resp['url']
 
-                # return redirect(resp['url'])
-            if 'html' in resp.keys() and resp['html'] != '':
+                return redirect(resp['url'])
+            elif 'html' in resp.keys() and resp['html'] != '':
                 print 222222222222
                 return render_template('blank.html',content=Markup(resp['html']))
             else:

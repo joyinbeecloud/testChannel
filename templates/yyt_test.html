@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>渠道参数配置测试</title>
+
+    <style>
+        .s1 div{margin-top:  1000px;}
+        .input_style input{width:300px; margin-top: 9px;margin-left:4px;height: 28px;padding-left: 3px;font-size: 16px;}
+        .input_style button{margin-top: 20px; margin-left: 300px; width: 80px;height: 36px; font-size: 16px;border: none}
+        input::-webkit-input-placeholder{color: #D8D8D8}
+        .button_style button{width: 150px;height: 50px;background-color: #FF6C2C;font-weight: bold;font-size: 16px; text-align: center}
+    </style>
+</head>
+<body style="text-align:center;">
+<div class="s1 s2">
+    <div hidden="hidden">text1</div>
+    <div hidden="hidden">text2</div>
+</div>
+
+
+
+
+<div class="button_style">
+    <button id="bj1" >bj1支付</button><br><br>
+    <button id="bj2" >bj2支付</button><br><br>
+    <button id="bj3" >bj3支付</button><br><br>
+    <button id="bj4" >bj4支付</button>
+</div>
+
+
+
+
+<br><br><br>
+
+
+    <script language="JavaScript" src="/static/jquery-2.1.4.min.js"></script>
+    <script language="JavaScript" src="../static/jquery.md5.js"></script>
+    <script language="JavaScript">
+
+        $(function() {
+            $('#bj1').click(function(){
+                $('<form action="/yyt_test/yyt_bc_gateway" method="get" style="display:none" target="_blank" ><input type="hidden"  name="host"  value="http://123.57.71.81:8080/2"/></form>').appendTo('body').submit();
+            });
+
+            $('#bj2').click(function(){
+                $('<form action="/yyt_test/yyt_bc_gateway" method="get" style="display:none" target="_blank" ><input type="hidden"  name="host"  value="http://123.56.92.236:8080/2"/></form>').appendTo('body').submit();
+            });
+
+            $('#bj3').click(function(){
+                $('<form action="/yyt_test/yyt_bc_gateway" method="get" style="display:none" target="_blank" ><input type="hidden"  name="host"  value="http://101.200.126.108:8080/2"/></form>').appendTo('body').submit();
+            });
+
+            $('#bj4').click(function(){
+                $('<form action="/yyt_test/yyt_bc_gateway" method="get" style="display:none" target="_blank" ><input type="hidden"  name="host"  value="http://123.56.238.125:8080/2"/></form>').appendTo('body').submit();
+            });
+
+
+
+        });
+
+
+
+</script>
+
+</body>
+</html>
