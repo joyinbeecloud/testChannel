@@ -79,6 +79,9 @@ def webhook():
     createdAt = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
     webhook_data = request.get_json()
     if webhook_data['transaction_type']=='REFUND_PARTITION' or webhook_data['transaction_type']=='PAY_PARTITION':
+        logger.info('%s recieve webhook:%s' %(webhook_data['transaction_type'],json.dumps(webhook_data, encoding='utf-8', ensure_ascii=False)))
+        transaction_id = webhook_data['transaction_id']
+        logger.info('%s webhook success' % transaction_id)
         return 'success'
 
     #从webhook里拿信息
