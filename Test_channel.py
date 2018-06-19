@@ -268,10 +268,10 @@ def bill():
     logger.info('%s: %s'%(bill_no,url_temp))
     # resp=requests.post(url_temp,json=online_bill_values)
     resp = request_post(url_temp,online_bill_values)
-    # fp.write("返回结果%s"%resp)
-    # print resp
-    # print_resp(resp)
     logger.info('%s: %r'%(bill_no,resp))
+
+
+
     return deal_with_pay(channel,resp,total_fee)
 
 

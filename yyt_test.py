@@ -59,7 +59,7 @@ def yinyingtong_bc_gateway():
         'bill_no': bill_no,
         'return_url': 'http://beecloud.cn',
         'notify_url': 'https://mock.beecloud.cn:8001/webhook/verify',
-        'bank':'102100099996'
+        'bank':'301290000007'
     }
     url_temp = url + "/rest/bill"
     resp = request_post(url_temp, online_bill_values)
