@@ -78,7 +78,7 @@ def webhook():
     refund_bill_no=''
     createdAt = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
     webhook_data = request.get_json()
-    if webhook_data['transaction_type']=='REFUND_PARTITION' or webhook_data['PAY_PARTITION']:
+    if webhook_data['transaction_type']=='REFUND_PARTITION' or webhook_data['transaction_type']=='PAY_PARTITION':
         return 'success'
 
     #从webhook里拿信息
