@@ -222,8 +222,9 @@ def webhook():
                 modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_bill_no,transaction_type))
             return transaction_id+':'+result_msg
     #判断ip是否正常，signature是否正常
-    if str(ip) == '123.57.146.46' or str(ip) == '182.92.114.175' or str(
-            ip) == '123.57.81.91':
+    # if str(ip) == '123.57.146.46' or str(ip) == '182.92.114.175' or str(
+    #         ip) == '123.57.81.91':
+    if 1:
         # 判断两个sign是否一致
         if bc_sign == signature:
             logger.info('%s webhook success' % transaction_id)
