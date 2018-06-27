@@ -102,7 +102,7 @@ def webhook():
         # messageDetail = json_data['messageDetail']
         optional = json_data['optional']
         sub_channel_type = json_data['sub_channel_type']
-        if transaction_type=='PAY':
+        if transaction_type=='PAY' and 'SCAN' not in sub_channel_type:
             bill_fee = json_data['bill_fee']
             discount = json_data['discount']
             coupon_id = json_data['coupon_id']
@@ -164,7 +164,7 @@ def webhook():
                 bill_channel_type = transaction['channel']
                 bill_sub_channel_type = transaction['sub_channel']
                 bill_optional = transaction['optional']
-                if transaction_type=='PAY':
+                if transaction_type=='PAY' and 'SCAN' not in sub_channel_type:
                     bill_transaction_fee = transaction['total_fee']
                     bill_bill_fee = transaction['bill_fee']
                     bill_discount = transaction['discount']
@@ -174,6 +174,12 @@ def webhook():
                                   "optional": bill_optional, "sub_channel_type": bill_sub_channel_type,
                                   "bill_fee": bill_bill_fee,
                                   "discount": bill_discount, "coupon_id": bill_coupon_id}
+                elif transaction_type=='PAY' and 'SCAN' in sub_channel_type:
+                    bill_transaction_fee = transaction['total_fee']
+                    bill_param = {"transaction_fee": bill_transaction_fee, "channel_type": bill_channel_type,
+                                  "bill_id": bill_id,
+                                  "optional": bill_optional, "sub_channel_type": bill_sub_channel_type,
+                                  }
                 else:
                     bill_transaction_fee = transaction['refund_fee']
                     # refund_no = transaction_id  #这一步是把webhook里的transaction_id存成退款订单号
