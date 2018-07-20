@@ -82,7 +82,7 @@ def webhook():
         logger.info('%s recieve webhook:%s' %(webhook_data['transaction_type'],json.dumps(webhook_data, encoding='utf-8', ensure_ascii=False)))
         transaction_id = webhook_data['transaction_id']
         logger.info('%s webhook success' % transaction_id)
-        return 'success'
+        return 'success1'
 
     #从webhook里拿信息
     try:
