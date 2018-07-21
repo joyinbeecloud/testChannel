@@ -82,7 +82,7 @@ def webhook():
         logger.info('%s recieve webhook:%s' %(webhook_data['transaction_type'],json.dumps(webhook_data, encoding='utf-8', ensure_ascii=False)))
         transaction_id = webhook_data['transaction_id']
         logger.info('%s webhook success' % transaction_id)
-        return 'success1'
+        return 'success'
 
     #从webhook里拿信息
     try:
@@ -233,8 +233,8 @@ def webhook():
     # if 1:
         # 判断两个sign是否一致
         if bc_sign == signature:
-            logger.info('%s webhook success' % transaction_id)
-            result_msg = "success"+str(ip)
+            logger.info('%s webhook success,send_host:%s' % (transaction_id,str(ip)))
+            result_msg = "success"
             if is_transaction_exist(transaction_id) == False:
                 modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_bill_no,transaction_type))
             return result_msg
