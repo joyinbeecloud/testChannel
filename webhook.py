@@ -103,13 +103,15 @@ def webhook():
         optional = json_data['optional']
         sub_channel_type = json_data['sub_channel_type']
         if transaction_type=='PAY' and 'SCAN' not in sub_channel_type:
-            bill_fee = json_data['bill_fee']
-            discount = json_data['discount']
-            coupon_id = json_data['coupon_id']
+            # bill_fee = json_data['bill_fee']
+            # discount = json_data['discount']
+            # coupon_id = json_data['coupon_id']
             webhook_param = {"transaction_fee": transaction_fee, "channel_type": channel_type,
                              "bill_id": webhook_bill_id,
-                             "optional": optional, "sub_channel_type": sub_channel_type, "bill_fee": bill_fee,
-                             "discount": discount, "coupon_id": coupon_id}
+                             "optional": optional, "sub_channel_type": sub_channel_type,
+                             # "bill_fee": bill_fee,
+                             # "discount": discount, "coupon_id": coupon_id
+                             }
         else:
             webhook_param = {"transaction_fee": transaction_fee, "channel_type": channel_type,
                              "bill_id": webhook_bill_id,
