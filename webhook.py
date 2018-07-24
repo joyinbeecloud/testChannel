@@ -234,7 +234,7 @@ def webhook():
         # 判断两个sign是否一致
         if bc_sign == signature:
             logger.info('%s webhook success,send_host:%s' % (transaction_id,str(ip)))
-            result_msg = "success1"
+            result_msg = "success2"
             if is_transaction_exist(transaction_id) == False:
                 modify_data(create_insert_sql(transaction_id,bill_id,result_msg,ip,createdAt,refund_bill_no,transaction_type))
             return result_msg
