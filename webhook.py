@@ -166,14 +166,15 @@ def webhook():
                 bill_optional = transaction['optional']
                 if transaction_type=='PAY' and 'SCAN' not in sub_channel_type:
                     bill_transaction_fee = transaction['total_fee']
-                    bill_bill_fee = transaction['bill_fee']
-                    bill_discount = transaction['discount']
-                    bill_coupon_id = transaction['coupon_id']
+                    # bill_bill_fee = transaction['bill_fee']
+                    # bill_discount = transaction['discount']
+                    # bill_coupon_id = transaction['coupon_id']
                     bill_param = {"transaction_fee": bill_transaction_fee, "channel_type": bill_channel_type,
                                   "bill_id": bill_id,
                                   "optional": bill_optional, "sub_channel_type": bill_sub_channel_type,
-                                  "bill_fee": bill_bill_fee,
-                                  "discount": bill_discount, "coupon_id": bill_coupon_id}
+                                  # "bill_fee": bill_bill_fee,
+                                  # "discount": bill_discount, "coupon_id": bill_coupon_id
+                                  }
                 elif transaction_type=='PAY' and 'SCAN' in sub_channel_type:
                     bill_transaction_fee = transaction['total_fee']
                     bill_param = {"transaction_fee": bill_transaction_fee, "channel_type": bill_channel_type,
