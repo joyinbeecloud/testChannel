@@ -119,6 +119,21 @@ def attachAppSign(reqPara,bcapp):
 
 
 
+def private_connect_db():
+    db = MySQLdb.connect("47.93.82.220", "shown", "jian", "service", charset='utf8')
+    cursor = db.cursor()
+    return {"db": db, "cursor": cursor}
+
+def private_query_data(query_sql):
+    db_resp = private_connect_db()
+    db = db_resp['db']
+    cursor = db_resp['cursor']
+    # query_sql = "select * from "+table
+    cursor.execute(query_sql)
+    content = cursor.fetchall()
+    db.commit()
+    db.close()
+    return content
 
 
 
