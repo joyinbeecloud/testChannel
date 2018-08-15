@@ -59,8 +59,6 @@ def private_webhook():
     webhook_param = {}
     bill_param = {}
     bill_webhook_verify = 0
-    signature = '0'
-    bc_sign = '1'
     Is_bill_id_match = 0
     tt = int(time.time()) * 1000
     ip = request.remote_addr
@@ -108,6 +106,7 @@ def private_webhook():
         app_secret = resp_dict['app_secret']
         signature = sign_md5(app_id + transaction_id + transaction_type + channel_type + str(
             transaction_fee) + app_master_secret+str(timestamp))
+
     else:
         logger.info("%s app_id is None" % transaction_id)
         return "app_id is None"
@@ -151,7 +150,7 @@ def private_webhook():
             result_msg = key + ' not in webhook'
             logger.info(transaction_id + ':' + result_msg)
             return transaction_id + ':' + result_msg
-    if bc_sign == signature:
+    if webhook_signature == signature:
         logger.info('%s webhook success,send_host:%s' % (transaction_id,str(ip)))
         result_msg = "success"
         return result_msg
