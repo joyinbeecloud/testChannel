@@ -81,6 +81,7 @@ def private_webhook():
         message_detail = json_data['message_detail']
         optional = json_data['optional']
         sub_channel_type = json_data['sub_channel_type']
+        timestamp = json_data['timestamp']
         webhook_param = {"transaction_fee": transaction_fee, "channel_type": channel_type,
                          'bill_no':transaction_id,
                          "optional": optional, "sub_channel_type": sub_channel_type,
@@ -106,7 +107,7 @@ def private_webhook():
         app_master_secret = resp_dict['master_secret']
         app_secret = resp_dict['app_secret']
         signature = sign_md5(app_id + transaction_id + transaction_type + channel_type + str(
-            transaction_fee) + app_master_secret)
+            transaction_fee) + app_master_secret+str(timestamp))
     else:
         logger.info("%s app_id is None" % transaction_id)
         return "app_id is None"
