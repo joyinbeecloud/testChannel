@@ -28,7 +28,7 @@ def get_bill_info(bill_id,trasaction_type='PAY'):
     if trasaction_type=='PAY':
         query_sql = "select total_fee,bill_no,channel,optional,sub_channel from bill WHERE bill_id='%s'" % bill_id
     elif trasaction_type =='REFUND':
-        query_sql = "select refund_fee,refund_no,channel,optional,sub_channel from bill WHERE bill_id='%s'" % bill_id
+        query_sql = "select refund_fee,refund_no,channel,optional,sub_channel from refund WHERE bill_id='%s'" % bill_id
 
     bill_infos = private_query_data(query_sql)
     bill_param={}
