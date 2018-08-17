@@ -26,9 +26,9 @@ def get_app_info(app_id):
 ##支付订单，bill_id传bill_id;退款订单，bill_id传refund_id
 def get_bill_info(bill_id,trasaction_type='PAY'):
     if trasaction_type=='PAY':
-        query_sql = "select total_fee,bill_no,channel,optional,sub_channel from bill WHERE bill_id='%s'" % bill_id
+        query_sql = "select total_fee,bill_no,channel,optional,sub_channel,channel_trade_no,bill_id from bill WHERE bill_id='%s'" % bill_id
     elif trasaction_type =='REFUND':
-        query_sql = "select refund_fee,refund_no,channel,optional,sub_channel from refund WHERE bill_id='%s'" % bill_id
+        query_sql = "select refund_fee,refund_no,channel,optional,sub_channel,channel_trade_no,bill_id from refund WHERE refund_id='%s'" % bill_id
 
     bill_infos = private_query_data(query_sql)
     bill_param={}
@@ -36,7 +36,8 @@ def get_bill_info(bill_id,trasaction_type='PAY'):
         for bill_info in bill_infos:
             bill_param={"transaction_fee": bill_info[0], 'bill_no':bill_info[1],
                         "channel_type": bill_info[2],"optional": bill_info[3],
-                        "sub_channel_type": bill_info[4]}
+                        "sub_channel_type": bill_info[4],"channel_trade_no": bill_info[5],
+                        "bill_id": bill_info[6]}
         return bill_param
     else:
         logger.info("查询的bill_id是:%r,查询结果是%r"%(bill_id, bill_infos))
@@ -74,16 +75,24 @@ def private_webhook():
         transaction_fee = json_data['transaction_fee']
         transaction_type = json_data['transaction_type']
         channel_type = json_data['channel_type']
-        webhook_bill_id = json_data['id']
+        webhook_bill_id = json_data['id']##退款是退款id，支付是支付id
         trade_success = json_data['trade_success']
         message_detail = json_data['message_detail']
         optional = json_data['optional']
         sub_channel_type = json_data['sub_channel_type']
         timestamp = json_data['timestamp']
+        channel_trade_no = json_data['channel_transaction_id']
         webhook_param = {"transaction_fee": transaction_fee, "channel_type": channel_type,
-                         'bill_no':transaction_id,
-                         "optional": optional, "sub_channel_type": sub_channel_type,
+                         'bill_no':transaction_id, "optional": optional,
+                         "sub_channel_type": sub_channel_type,"channel_trade_no":channel_trade_no,
+                         "bill_id":webhook_bill_id
                          }
+
+        if transaction_type=='REFUND':
+            bill_id=json_data['bill_id']
+            bill_no=json_data['bill_no']
+            webhook_param['bill_id']=bill_id
+
 
     except Exception, e:
         logger.info(traceback.print_exc(e))
