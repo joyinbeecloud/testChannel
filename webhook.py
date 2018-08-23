@@ -65,6 +65,9 @@ def is_transaction_exist(transaction_id):
 @webhook_view.route('/verify',methods=['POST'])
 def webhook():
     data=request.get_data()
+    print str(data)
+    if 'ethlaobian' in str(data):
+        return 'success'
     logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
     bill_query_param={}
     webhook_param = {}
@@ -77,12 +80,16 @@ def webhook():
     ip = request.remote_addr
     refund_bill_no=''
     createdAt = str(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-    webhook_data = request.get_json()
-    if webhook_data['transaction_type']=='REFUND_PARTITION' or webhook_data['transaction_type']=='PAY_PARTITION':
-        logger.info('%s recieve webhook:%s' %(webhook_data['transaction_type'],json.dumps(webhook_data, encoding='utf-8', ensure_ascii=False)))
-        transaction_id = webhook_data['transaction_id']
-        logger.info('%s webhook success' % transaction_id)
-        return 'success'
+    try:
+        webhook_data = request.get_json()
+        if webhook_data['transaction_type']=='REFUND_PARTITION' or webhook_data['transaction_type']=='PAY_PARTITION':
+            logger.info('%s recieve webhook:%s' %(webhook_data['transaction_type'],json.dumps(webhook_data, encoding='utf-8', ensure_ascii=False)))
+            transaction_id = webhook_data['transaction_id']
+            logger.info('%s webhook success' % transaction_id)
+            return 'success'
+    except Exception, e:
+        logger.info(traceback.print_exc(e))
+        return '获取webhook内容异常'
 
     #从webhook里拿信息
     try:
