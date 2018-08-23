@@ -65,10 +65,15 @@ def is_transaction_exist(transaction_id):
 @webhook_view.route('/verify',methods=['POST'])
 def webhook():
     data=request.get_data()
-    print str(data)
-    if 'ethlaobian' in str(data):
-        return 'success'
     logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
+    try:
+        data_dict=json.loads(data)
+        if 'confirm' in data_dict:
+            return 'success'
+    except Exception, e:
+        logger.info(traceback.print_exc(e))
+
+
     bill_query_param={}
     webhook_param = {}
     bill_param = {}
