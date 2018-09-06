@@ -565,6 +565,6 @@ def test_return_url():
 if __name__ == '__main__':
     app.debug = True
     # app.run(host='pythondemo.beecloud.cn', port=80)
-    app.run(host='192.168.2.112',port=5000)
-    # app.run(host='0.0.0.0',port=5000)
+    # app.run(host='192.168.2.112',port=5000)
+    app.run(host='0.0.0.0',port=5000)
     # app.run()
