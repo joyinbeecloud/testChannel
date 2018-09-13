@@ -11,6 +11,7 @@ from channelTable import channelTable_view
 from webhook import webhook_view
 from yyt_test import yyt_test_view
 from private_webhook import private_webhook_view
+from usdt_webhook import usdt_webhook_view
 import webbrowser
 from flask_login import (LoginManager,login_required,login_user,logout_user,UserMixin,current_user)
 
@@ -25,6 +26,7 @@ app.register_blueprint(channelTable_view, url_prefix='/channelTable')
 app.register_blueprint(webhook_view,url_prefix='/webhook')
 app.register_blueprint(yyt_test_view,url_prefix='/yyt_test')
 app.register_blueprint(private_webhook_view,url_prefix='/private_webhook')
+app.register_blueprint(usdt_webhook_view,url_prefix='/usdt_webhook')
 
 app.secret_key = 's3cr3t'
 login_manager = LoginManager()
@@ -565,6 +567,6 @@ def test_return_url():
 if __name__ == '__main__':
     app.debug = True
     # app.run(host='pythondemo.beecloud.cn', port=80)
-    # app.run(host='192.168.2.112',port=5000)
-    app.run(host='0.0.0.0',port=5000)
+    app.run(host='192.168.2.101',port=5000)
+    # app.run(host='0.0.0.0',port=5000)
     # app.run()
