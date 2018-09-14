@@ -10,7 +10,12 @@ usdt_webhook_view = Blueprint('usdt_webhook', __name__)
 
 @usdt_webhook_view.route('/verify',methods=['POST'])
 def webhook():
-    data=request.get_data()
-    logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
-    return 'success'
+    try:
+        data=request.get_json()
+        logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
+        return 'success'
+    except:
+        data = request.get_data()
+        logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
+        return 'success'
 
