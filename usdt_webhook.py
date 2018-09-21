@@ -22,6 +22,7 @@ def webhook():
             data.pop('appSign')
         appSign=dict_sorted_and_sign(data,app_secret)
         if appSign==recieve_appSign:
+            logger.info('hashcode:%s,success'%data['hashcode'])
             return 'success'
         else:
             logger.info('hashcode:%s,recieved appSign:%s,calculate appSign:%s'%(data['hashcode'],recieve_appSign,appSign))
