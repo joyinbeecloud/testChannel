@@ -30,6 +30,6 @@ def webhook():
     except Exception, e:
         logger.info(traceback.print_exc(e))
         data = request.get_data()
-        logger.info('USDT_webhook data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
+        logger.info('USDT_exception data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
         return 'except success'
 
