@@ -170,12 +170,12 @@ def query_data(query_sql):
 
 def dict_sorted_and_sign(json_para, app_secret):
     sorted_webhook_value = sorted(json_para.items())
-    print(sorted_webhook_value)
+    # print(sorted_webhook_value)
     # print(sorted_webhook_value[0][0])
     need_sign_str = ''
     for p in sorted_webhook_value:
         need_sign_str = need_sign_str + str(p[0] + '=') + str(p[1])
-    print(need_sign_str + app_secret)
+    # print(need_sign_str + app_secret)
     appSign_new = sign_md5(need_sign_str + app_secret)
     return appSign_new
 
