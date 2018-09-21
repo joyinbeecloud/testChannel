@@ -7,15 +7,28 @@ from datetime import datetime,date
 import MySQLdb,time,traceback
 
 usdt_webhook_view = Blueprint('usdt_webhook', __name__)
+apps={'a35dac4b-00c4-4930-9271-aed06810dd0c':'2034607c-1afc-47c5-bd66-6dfa00b1c524',
+      '0a5e78a3-ca29-4b63-906b-eb66dedf08a0':'e7247996-6e3d-47c7-8d75-944b8b29467f'}
 
 @usdt_webhook_view.route('/verify',methods=['POST'])
 def webhook():
     try:
         data=request.get_json()
-        logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
-        return 'success'
-    except:
+        logger.info('USDT_webhook data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
+        recieve_appSign=data['appSign']
+        app_id=data['appId']
+        app_secret=apps[app_id]
+        if 'appSign' in data:
+            data.pop('appSign')
+        appSign=dict_sorted_and_sign(data,app_secret)
+        if appSign==recieve_appSign:
+            return 'success'
+        else:
+            logger.info('hashcode:%s,recieved appSign:%s,calculate appSign:%s'%(data['hashcode'],recieve_appSign,appSign))
+            return 'appSign not match'
+    except Exception, e:
+        logger.info(traceback.print_exc(e))
         data = request.get_data()
-        logger.info('recieve data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
-        return 'success'
+        logger.info('USDT_webhook data:%s' % json.dumps(data, encoding='utf-8', ensure_ascii=False))
+        return 'except success'
 

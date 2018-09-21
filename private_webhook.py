@@ -98,8 +98,8 @@ def private_webhook():
         logger.info(traceback.print_exc(e))
         return '获取webhook内容异常'
     if trade_success!=True:
-        logger.info(transaction_id+':trade_success is not true,trade_success is '+trade_success)
-        return 'trade_success is not true,trade_success is '+trade_success
+        logger.info(transaction_id+':trade_success is not true,trade_success is '+str(trade_success))
+        return 'trade_success is not true,trade_success is '+str(trade_success)
     aa={}
     if type(message_detail)!=type(aa):
         logger.info(transaction_id+':message_detail is not a dict,message_detail is %r' %message_detail)
