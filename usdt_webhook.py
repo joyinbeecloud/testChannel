@@ -8,7 +8,9 @@ import MySQLdb,time,traceback
 
 usdt_webhook_view = Blueprint('usdt_webhook', __name__)
 apps={'a35dac4b-00c4-4930-9271-aed06810dd0c':'2034607c-1afc-47c5-bd66-6dfa00b1c524',
-      '0a5e78a3-ca29-4b63-906b-eb66dedf08a0':'e7247996-6e3d-47c7-8d75-944b8b29467f'}
+      '0a5e78a3-ca29-4b63-906b-eb66dedf08a0':'e7247996-6e3d-47c7-8d75-944b8b29467f',
+      'dc767edf-5123-483a-a166-9632f1bd4657':'cdb1252a-1ff7-4e31-9d7f-27826a3768b6',
+      '8741ef83-db4f-4bd7-ac97-049064bda5f5':'3c367b6a-faa0-48fb-b5d7-a1c6f3951b44'}
 
 @usdt_webhook_view.route('/verify',methods=['POST'])
 def webhook():
