@@ -60,7 +60,8 @@ hosts={
     'api8271':'https://api8271.beecloud.cn',
     '42.22':'http://123.56.42.22:8080',
     '191.185':'http://182.92.191.185:8080',
-    'apitest185':'https://apitest185.beecloud.cn'
+    'apitest185':'https://apitest185.beecloud.cn',
+
     }
 
 
