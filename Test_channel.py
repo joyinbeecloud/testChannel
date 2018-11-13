@@ -326,9 +326,10 @@ def bill():
     new_resp={}
     if is_private=='1':
         new_resp = {}
-        resp_data = resp['data']
-        resp.pop('data')
-        new_resp.update(resp_data)
+        if 'data' in resp and resp['data']!=None:
+            resp_data = resp['data']
+            resp.pop('data')
+            new_resp.update(resp_data)
         new_resp.update(resp)
         resp=new_resp
         resp['err_detail']=resp['error_msg']
