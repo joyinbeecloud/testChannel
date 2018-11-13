@@ -19,7 +19,33 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 
-def get_app(app_id):
+def get_app(app_id,is_private):
+    if is_private=='1':
+        return get_private_app(app_id)
+    else:
+        return get_bc_app(app_id)
+
+def get_private_app(app_id):
+    sql_str = "select * from app WHERE app_id='%s' and del_flag=0" % (app_id)
+    resp = private_query_data(sql_str)
+    # print resp
+    app_list = []
+    return_result = {}
+    for app in resp:
+        apps_dict = {}
+        app_id = app[0]
+        app_secret = app[3]
+        app_master_secret = app[5]
+        app_name = app[6]
+        apps_dict['app_id'] = app_id
+        apps_dict['app_secret'] = app_secret
+        apps_dict['app_master_secret'] = app_master_secret
+        apps_dict['app_name'] = app_name
+        app_list.append(apps_dict)
+
+    return app_list[0]
+
+def get_bc_app(app_id):
     tt = int(time.time()) * 1000
     sys_app_id = 'c37d661d-7e61-49ea-96a5-68c34e83db3a'
     sys_app_secret = 'c37d661d-7e61-49ea-96a5-68c34e83db3a'
@@ -36,13 +62,13 @@ def get_app(app_id):
     return resp_dict['apps'][0]
 
 
-def request_post(url,params):
+def request_post(url,params,headers):
     # print(url)
     jdata = json.dumps(params)
     # print(jdata)
     #r1 = requests.get('http://en.wikipedia.org/wiki/Monty_Python')
     try:
-        r=requests.post(url,json=params)
+        r=requests.post(url,json=params,headers=headers)
         #print(r.status_code)
     except requests.exceptions.HTTPError:
         return "httperror"
@@ -142,6 +168,7 @@ def connect_db():
     cursor = db.cursor()
     return {"db":db,"cursor":cursor}
 
+
 def modify_data(modify_sql):
     db_resp = connect_db()
     db = db_resp['db']
@@ -179,18 +206,3 @@ def dict_sorted_and_sign(json_para, app_secret):
     appSign_new = sign_md5(need_sign_str + app_secret)
     return appSign_new
 
-# apps=get_app('afae2a33-c9cb-4139-88c9-af5c1df472e1')
-# print apps
-# json_map={"aa":11,"bb":22}
-# try:
-#     for key in json_map:
-#         print json_map['www']
-# except Exception,e:
-#     print repr(e)
-
-# optional={"aa":{"bb":"EXCEPTION"}}
-# optional1={"aa":{"bb":"EXCEPTION"}}
-# if optional==optional1:
-#     print 'match'
-# else:
-#     print 'not match'

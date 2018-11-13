@@ -21,6 +21,7 @@
 
 <form id="get_app" method="get" action="/get_app" >
     <div style="width:85%;margin: 0 auto;margin-top: 74px">
+        <input name="is_private" id="is_private" type="checkbox" value="1"/>私有化项目<br>
 请输入email账号：<input type="text" name="email" id='email' value="{{ email }}" style="height: 25px; width: 400px;"/>
 
     <input id="get_app_submit" type="submit"  value="确定">
@@ -35,6 +36,7 @@
         <option value="false">非特约服务商</option>
         <option value="true">特约服务商</option>
     </select>  -->
+    <input name="is_private_copy" id="is_private_copy" type="checkbox" value="1" hidden="hidden"/>私有化项目<br>
     <input name="agent1" id="agent1" type="checkbox" value="true"/>是否特约服务商<br>
     <input type="text" name="app_id"  id="app_id" hidden="hidden" style="width:400px; height:25px;" />
     输入实付金额total_fee：<input id="total_fee" type="text" name="total_fee" value="1" style="width:100px; margin-top: 10px"/>分
@@ -73,44 +75,32 @@
     </div>
     <div id="gatewayBank_div" name="getwayBank_div" style="display: none">
         <br>
-        网关支付请选择银行bank:
-        <select id="gatewayBank" name="gatewayBank" >
-            <!--#银生宝支持的银行列表
-            <option value ="农业银行">农业银行</option>
-            <option value ="建设银行">建设银行</option>
-            <option value="兴业银行">兴业银行</option>
-            <option value="招商银行">招商银行</option>
-            <option value="民生银行">民生银行</option>
-            <option value="华夏银行">华夏银行</option>
-            <option value="工商银行">工商银行</option>
-            <option value="上海银行">上海银行</option>
-            <option value="中国银行">中国银行</option>
-            <option value="交通银行">交通银行</option>
-            <option value="上海浦东发展银行">上海浦东发展银行</option>
-            <option value="广东发展银行">广东发展银行</option>
-            <option value="深圳发展银行">深圳发展银行</option>
-            <option value="中国邮政储蓄">中国邮政储蓄</option>
-            <option value="北京银行">北京银行</option>
-            <option value="光大银行">光大银行</option>
-            <option value="中信银行">中信银行</option>
-            <option value="平安银行">平安银行</option>
-            <option value="宁波银行">宁波银行</option>-->
-            <!--衫德网关支持的银行列表-->
-            <!--
-            <option value ="农业银行">农业银行</option>
-            <option value ="建设银行">中国建设银行</option>
-            <option value="招商银行">招商银行</option>
-            <option value="民生银行">民生银行</option>
-            <option value="华夏银行">华夏银行</option>
-            <option value="工商银行">工商银行</option>
-            <option value="中国银行">中国银行</option>
-            <option value="广东发展银行">广东发展银行</option>
-            <option value="南京银行">南京银行</option>
-            <option value="北京银行">北京银行</option>
-            <option value="光大银行">光大银行</option>
-            <option value="中信银行">中信银行</option>
-            <option value="平安银行">平安银行</option>
-            <option value="东亚银行">东亚银行</option>-->
+        <div id="gatewayType_div" name="gatewayType_div">
+            请选择网关渠道：
+            <select id="gatewayType" name="gatewayType">
+                <option value ="10071023">汇付宝</option>
+                <option value ="10070010">银盈通</option>
+                <option value ="0">不传银行</option>
+            </select>
+        </div>
+        <br>
+        网关支付请选择银行bank:<br>
+        <select id="huifubao_gateway" name="huifubao_gateway" style="display: none">
+            <option value="104100000004">中国银行</option>
+            <option value="103100000026">中国农业银⾏</option>
+            <option value="102100099996">中国⼯商银⾏</option>
+            <option value="313332082914">宁波银⾏</option>
+            <option value="403100000004">中国邮政储蓄银⾏</option>
+            <option value="316331000018">浙商银⾏</option>
+            <option value="313100000013">北京银⾏</option>
+            <option value="306581000003">⼴发银⾏</option>
+            <option value="305100000013">中国⺠⽣银⾏</option>
+            <option value="303100000006">中国光⼤银⾏</option>
+            <option value="304100040000">华夏银行</option>
+            <option value="302100011000">中信银⾏</option>
+            <option value="105100000017">中国建设银⾏</option>
+        </select>
+        <select id="yinyongtong_gatewayBank" name="yinyongtong_gatewayBank" style="display: none">
             <option value ="102100099996">中国⼯商银⾏</option>
             <option value ="103100000026">中国农业银行</option>
             <option value="105100000017">中国建设银行</option>
@@ -120,9 +110,6 @@
             <option value="313100000013">北京银⾏</option>
             <option value="301290000007">交通银⾏</option>
             <option value="325290000012">上海银⾏</option>
-
-
-
         </select>
     </div>
     <div id="expressInfo" style="display: none;">
@@ -179,11 +166,13 @@
             <option value ="apibj2">apibj2</option>
             <option value ="apibj3">apibj3</option>
             <option value ="apibj4">apibj4</option>
+            <option value ="private">private</option>
             <option value ="other">other</option>
         </select>
     </div>
     <div id="error" style="color: red"></div>
     <div id="inputHostDiv"></div>
+
     <div style="margin-top: 30px; margin-left: 200px;">
         <input id="lala" type="submit" style="width: 100px; height: 40px; text-align: center; font-size: 18px;" value="支付">
     </div>
@@ -194,6 +183,11 @@
     <script language="JavaScript" src="static/jquery-2.1.4.min.js"></script>
     <script language="JavaScript" src="static/jquery.md5.js"></script>
     <script language="JavaScript">
+        is_private={{ is_private }}
+        if(is_private=='1'){
+            $('#is_private').attr("checked",true);
+            $('#is_private_copy').attr("checked",true);
+        }
 
 //根据后台返回的数据处理app_id和app_secret开始
         app_values={{ apps|tojson|safe }}
@@ -253,9 +247,29 @@
                 }else {
                     $('#auth_code_div').css({'display':'none'});
                 }
+                if($('#gatewayType option:selected').val()=="10071023"){
+                    $('#huifubao_gateway').css({'display':'block'});
+                }
 
 
             });
+            $('#gatewayType').change(function () {
+                if($('#gatewayType option:selected').val()=="10071023"){
+                    $('#huifubao_gateway').css({'display':'block'});
+                    $('#yinyongtong_gatewayBank').css({'display':'none'});
+                }
+                else if($('#gatewayType option:selected').val()=="10070010"){
+                    $('#huifubao_gateway').css({'display':'none'});
+                    $('#yinyongtong_gatewayBank').css({'display':'block'});
+                }
+                else if($('#gatewayType option:selected').val()=="0"){
+                    $('#huifubao_gateway').css({'display':'none'});
+                    $('#yinyongtong_gatewayBank').css({'display':'none'});
+                }
+
+            });
+
+
 
             $('#controlOption').click(function () {
                 $('#option').toggle();

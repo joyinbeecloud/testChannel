@@ -118,7 +118,7 @@ def button():
     # if "MicroMessenger" in user_agent:
     #     open_id = request.args.get('openid')
     #     if not open_id:
-    #         url = "http://wxactivity.beecloud.cn/activity/get.openid.php?callbackurl=" + "http://192.168.1.117:9887/" + "&app_id=" + app_id
+    #         url = "http://wxactivity.beecloud.cn/activity/get.openid.php?callbackurl=" + "http://192.168.1.117:9887/" + "&app_id=" + app_id##网页授权域，获取open_id,支付授权目录
     #         print(url)
     #         return redirect(url)
     #     else:

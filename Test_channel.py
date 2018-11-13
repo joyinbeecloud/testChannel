@@ -59,6 +59,7 @@ hosts={
     'apibj2':'http://123.56.92.236:8080/2',
     'apibj3':'http://101.200.126.108:8080/2',
     'apibj4':'http://123.56.238.125:8080/2',
+    'private':'http://47.95.28.179:9999/v1/bill/online'
 
     }
 users=[{'username':'beecloud','password':'beecloud617','user_id':'1qaz'},{'username':'bee','password':'bee','user_id':'2wsx'}]
@@ -127,6 +128,43 @@ def hello_index():
 @app.route('/get_app')
 def get_app_email():
     email = request.args.get('email').strip()
+    is_private = request.args.get('is_private',default='0')
+    # print is_private
+    if is_private!='1':
+        resp = get_bc_apps(email)
+        print 'bc'
+        print resp
+    else:
+        resp = get_private_apps(email)
+        print 'private'
+        print resp
+    return render_template('new_index.html', email=email, apps=resp,is_private=is_private)
+
+def get_private_apps(email):
+    sql_str = "select * from app WHERE user_id=(select user_id from user where account='%s') and del_flag=0"%(email)
+    resp = private_query_data(sql_str)
+    # print resp
+    app_list=[]
+    return_result={}
+    for app in resp:
+        apps_dict = {}
+        app_id = app[0]
+        app_secret = app[3]
+        app_master_secret = app[5]
+        app_name = app[6]
+        apps_dict['app_id']=app_id
+        apps_dict['app_secret'] = app_secret
+        apps_dict['app_master_secret'] = app_master_secret
+        apps_dict['app_name'] = app_name
+        app_list.append(apps_dict)
+    return_result['result_code']=0
+    return_result['apps']=app_list
+    return return_result
+
+
+
+
+def get_bc_apps(email):
     tt = int(time.time()) * 1000
     sys_app_id = 'c37d661d-7e61-49ea-96a5-68c34e83db3a'
     sys_app_secret = 'c37d661d-7e61-49ea-96a5-68c34e83db3a'
@@ -135,12 +173,13 @@ def get_app_email():
     url_temp = "http://internal.beecloud.cn/data/external/get.apps.php"
     # url_temp = "http://internal.comsunny.com/data/external/get.apps.php"
     resp = requests.get(url_temp, params=data1).content
-    print resp
+    # print resp
     resp_cut = resp[1:len(resp) - 1]
     resp_dict = json.loads(resp_cut)  # 字符串转化成字典。dumps字典转换成字符串
     # print(resp_dict)
+    return resp_dict
     # resp_dict = eval(resp_cut)
-    return render_template('new_index.html',email=email,apps=resp_dict)
+    # return render_template('new_index.html',email=email,apps=resp_dict)
     # return resp_dict['apps'][0]
 
 
@@ -158,9 +197,11 @@ def bill():
     print "执行时间"+dat
     # fp.write("\n"+dat)
     # fp.write("  请求地址：%s  "%url)
+    is_private = request.form.get('is_private_copy', default='0')
+    # print 'is_private:'+is_private
     app_id = request.form['app_id']
     if app_id!=None:
-        app_secret = get_app(app_id)['app_secret']
+        app_secret = get_app(app_id,is_private)['app_secret']
     else:
         return "app_id is empty"
 
@@ -175,13 +216,13 @@ def bill():
         coupon_id=None
     auth_code = request.form['auth_code']
     card_no = request.form['card_no']
-    #AFS T0的必传参数
-    # bank_name = request.form['bank_name']
-    # #print("bank_name:%s"%bank_name)
-    # bank_num = request.form['bank_num']
-    # idcard = request.form['idcard']
-    # name = request.form['name']
-    bank = request.form['gatewayBank']
+    gatewayType = request.form['gatewayType']
+    if gatewayType=='10071023':
+        bank = request.form['huifubao_gateway']
+    elif gatewayType=='0':
+        bank =None
+    else:
+        bank = request.form['yinyongtong_gatewayBank']
     if bank=='':
         bank=None
     buyer_id = request.form['buyer_id']
@@ -220,7 +261,10 @@ def bill():
     # optional['name'] = name
     noti = request.form['notify_url']
     if noti == '':
-        notify_url = 'http://mock.beecloud.cn:8001/webhook/verify'
+        if is_private!='1':
+            notify_url = 'http://mock.beecloud.cn:8001/webhook/verify'
+        else:
+            notify_url = 'http://mock.beecloud.cn:8001/private_webhook/verify'
     else:
         notify_url = noti
 
@@ -259,23 +303,37 @@ def bill():
         'partition_id':partition_id
         }
     # print '传入参数：%r'%online_bill_values
-    if agent == 'true':
-        url_temp = url+"/rest/offline/agent/bill"
-    else:
-        if channel == 'BC_ALI_SCAN' or channel == 'BC_WX_SCAN' or channel == 'WX_SCAN' or channel == 'ALI_SCAN' or channel == 'ALI_OFFLINE_QRCODE':
-            url_temp = url+"/rest/offline/bill"
+    if is_private!='1':
+        if agent == 'true':
+            url_temp = url+"/rest/offline/agent/bill"
         else:
-            url_temp = url+"/rest/bill"
+            if channel == 'BC_ALI_SCAN' or channel == 'BC_WX_SCAN' or channel == 'WX_SCAN' or channel == 'ALI_SCAN' or channel == 'ALI_OFFLINE_QRCODE':
+                url_temp = url+"/rest/offline/bill"
+            else:
+                url_temp = url+"/rest/bill"
+    else:
+        if 'SCAN' in channel:
+            url_temp = 'http://47.95.28.179:9999/v1/bill/offline'
+        else:
+            url_temp = 'http://47.95.28.179:9999/v1/bill/online'
     # print url_temp
     logger.info(online_bill_values)
     logger.info('%s: %s'%(bill_no,url_temp))
     # resp=requests.post(url_temp,json=online_bill_values)
-    resp = request_post(url_temp,online_bill_values)
+    resp = request_post(url_temp,online_bill_values,headers={'app_sign':sign})
     logger.info('%s: %r'%(bill_no,resp))
 
-
-
-    return deal_with_pay(channel,resp,total_fee)
+    new_resp={}
+    if is_private=='1':
+        new_resp = {}
+        resp_data = resp['data']
+        resp.pop('data')
+        new_resp.update(resp_data)
+        new_resp.update(resp)
+        resp=new_resp
+        resp['err_detail']=resp['error_msg']
+        # print(new_resp)
+    return deal_with_pay(channel, resp, total_fee)
 
 
 @app.route('/pay_bill',methods=['POST', 'GET'])
@@ -567,6 +625,6 @@ def test_return_url():
 if __name__ == '__main__':
     app.debug = True
     # app.run(host='pythondemo.beecloud.cn', port=80)
-    app.run(host='192.168.2.101',port=5000)
-    # app.run(host='0.0.0.0',port=5000)
+    # app.run(host='192.168.2.101',port=5000)
+    app.run(host='0.0.0.0',port=5000)
     # app.run()
