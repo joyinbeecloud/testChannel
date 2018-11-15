@@ -312,7 +312,7 @@ def bill():
             else:
                 url_temp = url+"/rest/bill"
     else:
-        if 'SCAN' in channel:
+        if 'SCAN' in channel or 'ALI_OFFLINE_QRCODE' in channel:
             url_temp = 'http://47.95.28.179:9999/v1/bill/offline'
         else:
             url_temp = 'http://47.95.28.179:9999/v1/bill/online'
