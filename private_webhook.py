@@ -75,7 +75,7 @@ def private_webhook():
         transaction_fee = json_data['transaction_fee']
         transaction_type = json_data['transaction_type']
         channel_type = json_data['channel_type']
-        webhook_bill_id = json_data['id1']##退款是退款id，支付是支付id
+        webhook_bill_id = json_data['id']##退款是退款id，支付是支付id
         trade_success = json_data['trade_success']
         message_detail = json_data['message_detail']
         optional = json_data['optional']
