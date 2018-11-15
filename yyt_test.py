@@ -42,7 +42,7 @@ def yinyingtong_bc_gateway():
     app_id = "afae2a33-c9cb-4139-88c9-af5c1df472e1"
 
     if app_id!=None:
-        resp_dict = get_app(app_id)
+        resp_dict = get_app(app_id,is_private='0')
         app_secret = resp_dict['app_secret']
         sign=sign_md5(app_id+str(tt)+app_secret)
 
@@ -62,7 +62,7 @@ def yinyingtong_bc_gateway():
         'bank':'102100099996'
     }
     url_temp = url + "/rest/bill"
-    resp = request_post(url_temp, online_bill_values)
+    resp = request_post(url_temp, online_bill_values,headers={'app_sign':sign})
     resp['channel'] = "BC_GATEWAY"
     # resp = json.dumps(resp)
     print resp
