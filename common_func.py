@@ -19,7 +19,7 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 
-def get_app(app_id,is_private):
+def get_app(app_id,is_private='1'):
     if is_private=='1':
         return get_private_app(app_id)
     else:
@@ -62,7 +62,7 @@ def get_bc_app(app_id):
     return resp_dict['apps'][0]
 
 
-def request_post(url,params,headers):
+def request_post(url,params,headers={'app_sign':'123'}):
     # print(url)
     jdata = json.dumps(params)
     # print(jdata)
