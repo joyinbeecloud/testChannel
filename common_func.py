@@ -19,7 +19,7 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 
-def get_app(app_id,is_private='1'):
+def get_app(app_id,is_private='0'):
     if is_private=='1':
         return get_private_app(app_id)
     else:
