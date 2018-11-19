@@ -260,14 +260,14 @@ def bill():
     # optional['idcard'] = idcard
     # optional['name'] = name
     noti = request.form['notify_url']
-    # if noti == '':
-    #     if is_private!='1':
-    #         notify_url = 'http://mock.beecloud.cn:8001/webhook/verify'
-    #     else:
-    #         notify_url = 'http://mock.beecloud.cn:8001/private_webhook/verify'
-    # else:
-    #     notify_url = noti
-    notify_url = None
+    if noti == '':
+        if is_private!='1':
+            notify_url = 'http://mock.beecloud.cn:8001/webhook/verify'
+        else:
+            notify_url = 'http://mock.beecloud.cn:8001/private_webhook/verify'
+    else:
+        notify_url = noti
+    # notify_url = None
 
     host=request.form['host']
     if host!='':
