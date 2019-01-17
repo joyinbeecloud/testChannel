@@ -10,7 +10,8 @@ usdt_webhook_view = Blueprint('usdt_webhook', __name__)
 apps={'a35dac4b-00c4-4930-9271-aed06810dd0c':'db4c4d19-cc46-4f36-bb20-9ab293fffeb5',
       '0a5e78a3-ca29-4b63-906b-eb66dedf08a0':'e7247996-6e3d-47c7-8d75-944b8b29467f',
       'dc767edf-5123-483a-a166-9632f1bd4657':'cdb1252a-1ff7-4e31-9d7f-27826a3768b6',
-      '8741ef83-db4f-4bd7-ac97-049064bda5f5':'3c367b6a-faa0-48fb-b5d7-a1c6f3951b44'}
+      '8741ef83-db4f-4bd7-ac97-049064bda5f5':'3c367b6a-faa0-48fb-b5d7-a1c6f3951b44',
+      'b8989132-b732-4fbc-8724-fd7213672e5b':'066a5db7-fc9c-4784-9ae5-96f3037b3c89'}
 
 @usdt_webhook_view.route('/verify',methods=['POST'])
 def webhook():
