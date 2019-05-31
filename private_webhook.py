@@ -1,7 +1,6 @@
 # encoding: utf-8
 from flask import Blueprint
 from flask import Flask, request, redirect, render_template,Markup
-import json
 from common_func import *
 from datetime import datetime,date
 import MySQLdb,time,traceback
@@ -90,7 +89,7 @@ def private_webhook():
 
         if transaction_type=='REFUND':
             bill_id=json_data['bill_id']
-            bill_no=json_data['bill_no']
+            # bill_no=json_data['bill_no']
             webhook_param['bill_id']=bill_id
 
 
