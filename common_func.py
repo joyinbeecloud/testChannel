@@ -114,6 +114,7 @@ def request_put(url,param):
 def sign_md5(str1):
     m=hashlib.md5()
     m.update(str1.encode('utf-8'))
+    # m.update(str1.encode())
     get_md5= m.hexdigest()
     return get_md5
 
