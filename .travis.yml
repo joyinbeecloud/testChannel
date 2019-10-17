@@ -1,3 +1,4 @@
 language: python
 script: true
 python: 2.7
+install:true
