@@ -92,8 +92,6 @@ def get_app_email():
     # return render_template('new_index.html',email=email,apps=resp_dict)
 
 
-
-
 @jsbutton_view.route('/button',methods=['GET'])
 def button():
     out_trade_no = "cmfjs" + str(int(time.time())) + str(random.randint(1,100))

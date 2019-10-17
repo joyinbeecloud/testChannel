@@ -13,6 +13,7 @@ from yyt_test import yyt_test_view
 from private_webhook import private_webhook_view
 from usdt_webhook import usdt_webhook_view
 from show_ip import show_ip_view
+from pic2word import pic2word_view
 
 import webbrowser
 from flask_login import (LoginManager,login_required,login_user,logout_user,UserMixin,current_user)
@@ -30,6 +31,7 @@ app.register_blueprint(yyt_test_view,url_prefix='/yyt_test')
 app.register_blueprint(private_webhook_view,url_prefix='/private_webhook')
 app.register_blueprint(usdt_webhook_view,url_prefix='/usdt_webhook')
 app.register_blueprint(show_ip_view,url_prefix='/show_ip')
+app.register_blueprint(pic2word_view,url_prefix='/pic2word')
 
 app.secret_key = 's3cr3t'
 login_manager = LoginManager()
